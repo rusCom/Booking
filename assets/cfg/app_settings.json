@@ -1,0 +1,9 @@
+{
+  "dispatchingToken": "C3345D6297882D04F0AAE85A19611119",
+  "isTest": true,
+  "restHost": [
+    "http://api1.ataxi24.ru:5872",
+    "http://api2.ataxi24.ru:5872"
+  ],
+  "tmp_drawer": false
+}
