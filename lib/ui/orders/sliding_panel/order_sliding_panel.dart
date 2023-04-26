@@ -37,12 +37,12 @@ class OrderSlidingPanel extends StatelessWidget {
                   children: [
                     ListTile(
                       leading: SvgPicture.asset(
-                        MainApplication().curOrder.paymentType().iconName,
+                        MainApplication().curOrder.paymentType()!.iconName,
                         width: Const.modalBottomSheetsLeadingSize,
                         height: Const.modalBottomSheetsLeadingSize,
                       ),
                       title: Text("Стоимость поездки"),
-                      subtitle: Text(MainApplication().curOrder.paymentType().choseName),
+                      subtitle: Text(MainApplication().curOrder.paymentType()!.choseName),
                       trailing: Text(MainApplication().curOrder.cost + " \u20BD"),
                     ),
                     MediaQuery.removePadding(

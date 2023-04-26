@@ -1,3 +1,4 @@
+import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart' hide ReorderableList;
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 
@@ -8,8 +9,10 @@ import '../../../services/app_blocs.dart';
 import '../../route_point/route_point_screen.dart';
 
 class NewOrderRoutePointsReorderDialog extends StatefulWidget {
+  const NewOrderRoutePointsReorderDialog({super.key});
+
   @override
-  State<NewOrderRoutePointsReorderDialog> createState() => new _NewOrderRoutePointsReorderDialogState();
+  State<NewOrderRoutePointsReorderDialog> createState() => _NewOrderRoutePointsReorderDialogState();
 }
 
 class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsReorderDialog> {
@@ -23,7 +26,8 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
 
   void _reorderDone(Key item) {
     final draggedItem = MainApplication().curOrder.routePoints[_indexOfKey(item)];
-    debugPrint("Reordering finished for ${draggedItem.name}}");
+    // debugPrint("Reordering finished for ${draggedItem.name}}");
+    DebugPrint().log("NewOrderRoutePointsReorderDialog", "reorderDone", draggedItem.name);
   }
 
   @override
@@ -35,18 +39,20 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
       },
       child: Scaffold(
         appBar: AppBar(
-          leading: new IconButton(
-            icon: new Icon(Icons.arrow_back, color: Colors.black),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () async {
               await MainApplication().curOrder.routePoints.first.checkPickUp();
+              if (!mounted) return;
               Navigator.pop(context);
             },
           ),
-          title: const Text("Корректировка маршрута"),
+          title: const Text("Корректировка маршрута", style: TextStyle(color: Colors.black)),
+          backgroundColor: Preferences().mainColor,
         ),
         body: ReorderableList(
-          onReorder: this._reorderCallback,
-          onReorderDone: this._reorderDone,
+          onReorder: _reorderCallback,
+          onReorderDone: _reorderDone,
           child: CustomScrollView(
             slivers: <Widget>[
               SliverPadding(
@@ -63,8 +69,8 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
                                 children: <Widget>[
                                   Expanded(
                                     child: TextButton.icon(
-                                      icon: const Icon(Icons.add),
-                                      label: const Text("Добавить"),
+                                      icon: const Icon(Icons.add, color: Colors.black),
+                                      label: const Text("Добавить", style: TextStyle(color: Colors.black)),
                                       onPressed: () async {
                                         RoutePoint? routePoint = await Navigator.push<RoutePoint>(
                                             context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
@@ -74,11 +80,11 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
                                       },
                                     ),
                                   ),
-                                  Container(height: 40, child: VerticalDivider(color: Preferences().mainColor)),
+                                  SizedBox(height: 40, child: VerticalDivider(color: Preferences().mainColor)),
                                   Expanded(
                                     child: TextButton.icon(
-                                      icon: const Icon(Icons.cached),
-                                      label: const Text("Обратно"),
+                                      icon: const Icon(Icons.cached, color: Colors.black),
+                                      label: const Text("Обратно", style: TextStyle(color: Colors.black)),
                                       onPressed: MainApplication().curOrder.routePoints.first.placeId ==
                                               MainApplication().curOrder.routePoints.last.placeId
                                           ? null
@@ -110,7 +116,8 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
 }
 
 class Item extends StatelessWidget {
-  Item({
+  const Item({
+    super.key,
     required this.data,
     required this.isFirst,
     required this.isLast,
@@ -176,7 +183,7 @@ class Item extends StatelessWidget {
                       ),
                       child: Text(
                         data.name,
-                        style: Theme.of(context).textTheme.subtitle1,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
                     ),
                   ),

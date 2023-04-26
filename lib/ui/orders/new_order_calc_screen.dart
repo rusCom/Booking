@@ -157,12 +157,12 @@ class NewOrderCalcScreen extends StatelessWidget {
                           builder: (context, snapshot) {
                             return TextButton.icon(
                               icon: SvgPicture.asset(
-                                MainApplication().curOrder.paymentType().iconName,
+                                MainApplication().curOrder.paymentType()!.iconName,
                                 width: 32,
                                 height: 32,
                                 colorFilter: const ColorFilter.mode(Colors.deepOrange, BlendMode.srcIn),
                               ),
-                              label: Text(MainApplication().curOrder.paymentType().name,
+                              label: Text(MainApplication().curOrder.paymentType()!.name,
                                   overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.black)),
                               onPressed: () {
                                 if (MainApplication().curOrder.paymentTypes.length > 1) {

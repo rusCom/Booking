@@ -9,7 +9,7 @@ class OrderWishes {
   bool petTransportation = false;
   bool nonSmokingSalon = false;
   bool conditioner = false;
-  DateTime workDate = DateTime.now();
+  DateTime? workDate;
 
   void clear() {
     driverNote = "";
@@ -17,7 +17,6 @@ class OrderWishes {
     petTransportation = false;
     nonSmokingSalon = false;
     conditioner = false;
-    workDate = DateTime.now();
   }
 
   int get count {
@@ -59,17 +58,20 @@ class OrderWishes {
   }
 
   String get workDateCaption {
+    if (workDate == null) {
+      return "";
+    }
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = DateTime(now.year, now.month, now.day + 1);
-    final aDate = DateTime(workDate.year, workDate.month, workDate.day);
+    final aDate = DateTime(workDate!.year, workDate!.month, workDate!.day);
     String date = "";
     if (aDate == today) {
-      date = "сегодня на " + DateFormat('HH:mm', 'ru').format(workDate);
+      date = "сегодня на ${DateFormat('HH:mm', 'ru').format(workDate!)}";
     } else if (aDate == tomorrow) {
-      date = "завтра на " + DateFormat('HH:mm', 'ru').format(workDate);
+      date = "завтра на ${DateFormat('HH:mm', 'ru').format(workDate!)}";
     } else {
-      date = DateFormat('dd MMMM на HH:mm', 'ru').format(workDate);
+      date = DateFormat('dd MMMM на HH:mm', 'ru').format(workDate!);
     }
     return date;
   }

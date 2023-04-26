@@ -122,7 +122,7 @@ class RestService {
       "dispatching": GlobalConfiguration().getValue("dispatchingToken"),
       "lt": MainApplication().currentPosition?.latitude,
       "ln": MainApplication().currentPosition?.longitude,
-      "platform": MainApplication().targetPlatform.toString(),
+      "platform": "android",
       "token": MainApplication().clientToken,
       "test": GlobalConfiguration().getValue("isTest"),
     };

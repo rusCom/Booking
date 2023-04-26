@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:booking/models/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -42,20 +43,20 @@ class Order {
   Order();
 
   String getLastRouteName() {
-    if (routePoints.length == 1)
+    if (routePoints.length == 1) {
       return "";
-    else if (routePoints.length == 2)
+    } else if (routePoints.length == 2) {
       return routePoints.last.name;
-    else if (routePoints.length == 3)
-      // return routePoints[1].name + " -> " + routePoints.last.name;
+    } else if (routePoints.length == 3) {
       return routePoints.last.name;
-    else
-      return "Еще " + (routePoints.length - 1).toString() + " адреса";
+    } else {
+      return "Еще ${routePoints.length - 1} адреса";
+    }
   }
 
   String getLastRouteDsc() {
     if (routePoints.length == 2) return routePoints.last.dsc;
-    if (routePoints.length == 3) return "через " + routePoints[1].name;
+    if (routePoints.length == 3) return "через ${routePoints[1].name}";
     return "";
   }
 
@@ -102,7 +103,7 @@ class Order {
 
   set orderState(OrderState value) {
     if (_orderState != value) {
-      DebugPrint().log(TAG, "orderState", "new order state = " + value.toString());
+      DebugPrint().log(TAG, "orderState", "new order state = $value");
 
       bool startTimer = false;
       _orderState = value;
@@ -130,26 +131,33 @@ class Order {
           break;
         case OrderState.search_car:
           animateCamera();
+          MainApplication().playAudioAlarmOrderStateChange();
+
+          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.drive_to_client:
           animateCamera();
-          // MainApplication.audioCache.play(MainApplication.audioAlarmOrderStateChange);
+          MainApplication().playAudioAlarmOrderStateChange();
+          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.drive_at_client:
           animateCamera();
-          // MainApplication.audioCache.play(MainApplication.audioAlarmOrderStateChange);
+          MainApplication().playAudioAlarmOrderStateChange();
+          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.paid_idle:
           animateCamera();
-          // MainApplication.audioCache.play(MainApplication.audioAlarmOrderStateChange);
+          MainApplication().playAudioAlarmOrderStateChange();
+          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.client_in_car:
           animateCamera();
-          // MainApplication.audioCache.play(MainApplication.audioAlarmOrderStateChange);
+          MainApplication().playAudioAlarmOrderStateChange();
+          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
       }
@@ -161,7 +169,7 @@ class Order {
   }
 
   Future<void> calcOrder() async {
-    DebugPrint().log(TAG, "calcOrder", this.toString());
+    DebugPrint().log(TAG, "calcOrder", toString());
     orderState = OrderState.new_order_calculating;
 
     var response = await RestService().httpPost("/orders/calc", toJson());
@@ -173,9 +181,7 @@ class Order {
       paymentTypes = payments.map((model) => PaymentType.fromJson(model)).toList();
       orderState = OrderState.new_order_calculated;
 
-      // sleep(const Duration(seconds: 5));
-
-      DebugPrint().log(TAG, "calcOrder", this.toString());
+      DebugPrint().log(TAG, "calcOrder", toString());
     }
   }
 
@@ -270,7 +276,7 @@ class Order {
         }
       } // if (_lastRoutePoints != jsonData['route'].toString()){
     }
-    DebugPrint().log(TAG, "parseData", this.toString());
+    DebugPrint().log(TAG, "parseData", toString());
   }
 
   bool animateCamera() {
@@ -297,13 +303,13 @@ class Order {
   }
 
   note(String note) async {
-    Map<String, dynamic> restResult = await RestService().httpGet("/orders/note?uid=" + _uid + "&note=" + Uri.encodeFull(note));
+    Map<String, dynamic> restResult = await RestService().httpGet("/orders/note?uid=$_uid&note=${Uri.encodeFull(note)}");
     MainApplication().parseData(restResult['result']);
     AppBlocs().orderStateController?.sink.add(_orderState);
   }
 
   deny(String reason) async {
-    Map<String, dynamic> restResult = await RestService().httpGet("/orders/deny?uid=" + _uid + "&reason=" + Uri.encodeFull(reason));
+    Map<String, dynamic> restResult = await RestService().httpGet("/orders/deny?uid=$_uid&reason=${Uri.encodeFull(reason)}");
     MainApplication().parseData(restResult['result']);
   }
 
@@ -341,20 +347,20 @@ class Order {
     }
   }
 
-  PaymentType paymentType({type = ""}) {
-    PaymentType searchingPaymentType = PaymentType(type: "cash");
+  PaymentType? paymentType({type = ""}) {
+    PaymentType? searchingPaymentType;
 
     if (type == "") {
       if (paymentTypes.isEmpty) {
         if (searchingPaymentType == null) {
-          routePoints[0].paymentTypes.forEach((paymentType) {
+          for (var paymentType in routePoints[0].paymentTypes) {
             if (paymentType.selected) searchingPaymentType = paymentType;
-          });
+          }
         }
       }
-      paymentTypes.forEach((paymentType) {
+      for (var paymentType in paymentTypes) {
         if (paymentType.selected) searchingPaymentType = paymentType;
-      });
+      }
       if (searchingPaymentType == null) {
         if (_orderState == OrderState.new_order_calculating || _orderState == OrderState.new_order_calculated) {
           _selectedPaymentType = "cash";

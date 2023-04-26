@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:audioplayers/audioplayers.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -8,7 +10,6 @@ import 'package:platform_device_id/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../services/map_markers_service.dart';
 import '../services/rest_service.dart';
 import '../ui/utils/core.dart';
 import 'order.dart';
@@ -27,21 +28,20 @@ class MainApplication {
   SharedPreferences? _sharedPreferences;
 
   Position? currentPosition;
-  Order _curOrder = Order();
-  String deviceId = "", _clientToken = "";
+  final Order _curOrder = Order();
+  String deviceId = "";
+  String? _clientToken;
   GoogleMapController? mapController;
   Preferences preferences = Preferences();
   bool _timerStarted = false, _lastLocation = true;
   bool _dataCycle = false;
   bool _loadingDialog = false;
-  TargetPlatform? targetPlatform;
+
   Map<String, dynamic> clientLinks = Map();
   List<RoutePoint> nearbyRoutePoint = [];
-  String pushToken = "";
+  String? pushToken;
 
-  // MapMarkersService mapMarkersService = MapMarkersService();
-
-  // static AudioCache audioCache = AudioCache();
+  static AudioCache audioCache = AudioCache();
   static const audioAlarmOrderStateChange = "sounds/order_state_change.wav";
 
   final LocationSettings locationSettings = const LocationSettings(
@@ -54,8 +54,6 @@ class MainApplication {
     deviceId = (await PlatformDeviceId.getDeviceId)!;
 
     await GlobalConfiguration().loadFromAsset("app_settings");
-
-    targetPlatform = Theme.of(context).platform;
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -82,28 +80,29 @@ class MainApplication {
       },
     );
 
-    await MapMarkersService().init(context);
     _clientToken = _sharedPreferences?.getString("_clientToken") ?? "";
-    /*
+
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-    pushToken = (await messaging.getToken())!;
+    pushToken = await messaging.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _loadDataCycle();
     });
 
-     */
     return true;
   }
 
+  playAudioAlarmOrderStateChange() {
+    audioCache.play(audioAlarmOrderStateChange);
+  }
+
   Order get curOrder {
-    _curOrder ??= Order();
     return _curOrder;
   }
 
   launchURL(String url) async {
-    Uri _url = Uri.parse(url);
-    if (await canLaunchUrl(_url)) {
-      await launchUrl(_url);
+    Uri url0 = Uri.parse(url);
+    if (await canLaunchUrl(url0)) {
+      await launchUrl(url0);
     } else {
       throw 'Could not launch $url';
     }
@@ -134,11 +133,11 @@ class MainApplication {
   showSnackBarError(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(text),
-      duration: Duration(seconds: 3),
+      duration: const Duration(seconds: 3),
     ));
   }
 
-  parseData(Map<String, dynamic> jsonData) {
+  parseData(Map<String, dynamic>? jsonData) {
     DebugPrint().log(TAG, "parseData", jsonData);
 
     if (jsonData == null) return;

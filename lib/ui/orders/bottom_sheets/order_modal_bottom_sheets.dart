@@ -121,7 +121,7 @@ class OrderModalBottomSheets {
                     Expanded(
                       child: MaterialButton(
                         onPressed: () {
-                          MainApplication().curOrder.orderWishes.workDate = DateTime.now();
+                          MainApplication().curOrder.orderWishes.workDate = null;
                           Navigator.of(context).pop();
                         },
                         child: const Text("На текущее время"),
@@ -445,10 +445,10 @@ class OrderModalBottomSheets {
   }
 
   static paymentTypes(BuildContext context) {
-    PaymentType cashPaymentType = MainApplication().curOrder.paymentType(type: "cash");
-    PaymentType corporationPaymentType = MainApplication().curOrder.paymentType(type: "corporation");
-    PaymentType sberbankPaymentType = MainApplication().curOrder.paymentType(type: "sberbank");
-    PaymentType bonusesPaymentType = MainApplication().curOrder.paymentType(type: "bonuses");
+    PaymentType? cashPaymentType = MainApplication().curOrder.paymentType(type: "cash");
+    PaymentType? corporationPaymentType = MainApplication().curOrder.paymentType(type: "corporation");
+    PaymentType? sberbankPaymentType = MainApplication().curOrder.paymentType(type: "sberbank");
+    PaymentType? bonusesPaymentType = MainApplication().curOrder.paymentType(type: "bonuses");
 
     showModalBottomSheet(
         context: context,
@@ -468,7 +468,7 @@ class OrderModalBottomSheets {
                             cashPaymentType.iconName,
                             width: 32,
                             height: 32,
-                            color: Colors.deepOrangeAccent,
+                            colorFilter: const ColorFilter.mode(Colors.deepOrangeAccent, BlendMode.srcIn),
                           ),
                           title: Text(cashPaymentType.choseName),
                           onTap: (details) async {
@@ -483,7 +483,7 @@ class OrderModalBottomSheets {
                             corporationPaymentType.iconName,
                             width: 32,
                             height: 32,
-                            color: Colors.deepOrangeAccent,
+                            colorFilter: const ColorFilter.mode(Colors.deepOrangeAccent, BlendMode.srcIn),
                           ),
                           title: Text(corporationPaymentType.choseName),
                           onTap: (details) async {
@@ -498,7 +498,7 @@ class OrderModalBottomSheets {
                             sberbankPaymentType.iconName,
                             width: 32,
                             height: 32,
-                            color: Colors.deepOrangeAccent,
+                            colorFilter: const ColorFilter.mode(Colors.deepOrangeAccent, BlendMode.srcIn),
                           ),
                           title: Text(sberbankPaymentType.choseName),
                           onTap: (details) async {
@@ -513,7 +513,7 @@ class OrderModalBottomSheets {
                             bonusesPaymentType.iconName,
                             width: 32,
                             height: 32,
-                            color: Colors.deepOrangeAccent,
+                            colorFilter: const ColorFilter.mode(Colors.deepOrangeAccent, BlendMode.srcIn),
                           ),
                           title: Text(bonusesPaymentType.choseName),
                           onTap: (details) async {

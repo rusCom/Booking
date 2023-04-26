@@ -27,7 +27,6 @@ class _MainScreenState extends State<MainScreen> {
   MapType _currentMapType = MapType.normal;
   late Set<Marker> _markers;
   Map<PolylineId, Polyline> _polylines = {};
-  late DateTime _backButtonPressedTime;
   late NewOrderFirstPointScreen newOrderFirstPointScreen;
   late NewOrderCalcScreen newOrderCalcScreen;
 
@@ -244,28 +243,16 @@ class _MainScreenState extends State<MainScreen> {
       return false;
     }
 
-// Если статус заказа - идет расчет стоимости, то ничего не делаем
+    // Если статус заказа - идет расчёт стоимости, то ничего не делаем
     if (MainApplication().curOrder.orderState == OrderState.new_order_calculating) {
       return false;
     }
-// Если расчтет стоимости произведен, то возвращаем на новый заказ
+    // Если расчёт стоимости произведен, то возвращаем на новый заказ
     if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
       newOrderCalcScreen.backPressed();
       return false;
     }
 
-    DateTime currentTime = DateTime.now();
-    //Statement 1 Or statement2
-    bool backButton = _backButtonPressedTime == null || currentTime.difference(_backButtonPressedTime) > const Duration(seconds: 3);
-    if (backButton) {
-      _backButtonPressedTime = currentTime;
-      /*
-      Fluttertoast.showToast(
-          msg: "Для выхода из приложения нажмите кнопку \"Назад\" еще раз.", backgroundColor: Colors.black, textColor: Colors.white);
-
-       */
-      return false;
-    }
     return true;
   }
 

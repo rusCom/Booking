@@ -4,6 +4,7 @@ import 'package:page_transition/page_transition.dart';
 import '../../models/main_application.dart';
 import '../../models/profile.dart';
 import '../../services/geo_service.dart';
+import '../../services/map_markers_service.dart';
 import '../main_screen.dart';
 import '../profile/profile_login_screen.dart';
 import '../utils/core.dart';
@@ -33,6 +34,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   startTime() async {
     DebugPrint().log(TAG, "startTime", "start MainApplication().init(context)");
     await MainApplication().init(context);
+    if (!mounted) return;
+    await MapMarkersService().init(context);
     DebugPrint().log(TAG, "startTime", "start profileAuth()");
     await profileAuth();
   }

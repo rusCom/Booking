@@ -12,12 +12,11 @@ class NewOrderMainButton extends StatelessWidget {
 
   String getCaption() {
     if (MainApplication().curOrder.orderState == OrderState.new_order_calculating) return "Расчет стоимости ...";
-    /*
+
     if (MainApplication().curOrder.orderWishes.workDate != null) {
       return "Запланировать поездку\n${MainApplication().curOrder.orderWishes.workDateCaption}";
     }
 
-     */
     return "Заказать такси";
   }
 
@@ -84,8 +83,8 @@ class NewOrderMainButton extends StatelessWidget {
 
   void onMainButtonPressed() {
     if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
-      // MainApplication().curOrder.add();
-      DebugPrint().flog("onMainButtonPressed addOrder");
+      MainApplication().curOrder.add();
+      // DebugPrint().flog("onMainButtonPressed addOrder");
     }
   }
 }

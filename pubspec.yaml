@@ -16,10 +16,11 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+13
+version: 0.0.13+13
 
 environment:
   sdk: '>=2.19.6 <3.0.0'
+  flutter: '>=1.12.13+hotfix.5'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -55,6 +56,9 @@ dependencies:
   page_transition: ^2.0.9
   flutter_masked_text2: ^0.9.1
   appmetrica_plugin: ^1.1.0
+  audioplayers: ^0.20.1 # Не обновлять на более поздную версию
+  firebase_core: ^2.10.0
+  firebase_messaging: ^14.4.1
 
   
 
