@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:booking/models/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 
 import '../services/app_blocs.dart';
 import '../services/map_markers_service.dart';
@@ -132,32 +133,26 @@ class Order {
         case OrderState.search_car:
           animateCamera();
           MainApplication().playAudioAlarmOrderStateChange();
-
-          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.drive_to_client:
           animateCamera();
           MainApplication().playAudioAlarmOrderStateChange();
-          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.drive_at_client:
           animateCamera();
           MainApplication().playAudioAlarmOrderStateChange();
-          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.paid_idle:
           animateCamera();
           MainApplication().playAudioAlarmOrderStateChange();
-          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
         case OrderState.client_in_car:
           animateCamera();
           MainApplication().playAudioAlarmOrderStateChange();
-          // MainApplication().audioAlarmOrderStateChangePlayer.play(AssetSource('sounds/order_state_change.wav'));
           startTimer = true;
           break;
       }
@@ -170,6 +165,7 @@ class Order {
 
   Future<void> calcOrder() async {
     DebugPrint().log(TAG, "calcOrder", toString());
+    Logger().v(toJson().toString());
     orderState = OrderState.new_order_calculating;
 
     var response = await RestService().httpPost("/orders/calc", toJson());
@@ -213,7 +209,7 @@ class Order {
   }
 
   factory Order.fromJson(Map<String, dynamic> jsonData) {
-    Order order = new Order();
+    Order order = Order();
     order.parseData(jsonData, isAnimateCamera: false);
     // DebugPrint().flog(order);
     return order;

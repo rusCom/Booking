@@ -158,9 +158,9 @@ class RoutePointScreen extends StatelessWidget {
     if (keyword.isNotEmpty && keyword != "" && keyword.length > 2) {
       AppBlocs().geoAutocompleteController?.sink.add("searching_");
       GeoService().autocomplete(keyword).then((result) {
-        if (result == null)
+        if (result == null) {
           AppBlocs().geoAutocompleteController?.sink.add("not_found_");
-        else {
+        } else {
           AppBlocs().geoAutocompleteController?.sink.add(result);
         }
       }).catchError((e) {

@@ -11,28 +11,31 @@ import 'payment_type.dart';
 class RoutePoint {
   final String name;
   final String dsc;
-  final String lt;
-  final String ln;
+  final double lt;
+  final double ln;
   final String type;
   final String placeId;
   final String detail;
+  final bool needDetail;
   final List<String> notes;
   Key key = ValueKey(const Uuid().v1());
   String _note = "";
   List<OrderTariff> orderTariffs = [];
   List<PaymentType> paymentTypes = [];
-  bool? canPickUp;
+  bool canPickUp;
 
   RoutePoint(
       {this.name = "",
       this.dsc = "",
-      this.lt = "",
-      this.ln = "",
+      this.lt = 0.0,
+      this.ln = 0.0,
       this.type = "",
       this.placeId = "",
+      this.needDetail = false,
       this.detail = "",
-      this.canPickUp,
+      this.canPickUp = false,
       this.orderTariffs = const [],
+      this.paymentTypes = const [],
       this.notes = const [],
       note = ""}) {
     key = ValueKey(const Uuid().v1());
@@ -40,32 +43,53 @@ class RoutePoint {
   }
 
   factory RoutePoint.fromJson(Map<String, dynamic> jsonData) {
+    List<OrderTariff> orderTariffs = [];
+    if (jsonData.containsKey('tariffs')) {
+      List<String> tariffs = jsonData['tariffs'].cast<String>();
+      for (var tariff in tariffs) {
+        orderTariffs.add(OrderTariff(type: tariff));
+      }
+    }
+    List<PaymentType> paymentTypes = [];
+    if (jsonData.containsKey('payments')) {
+      List<String> payments = jsonData['payments'].cast<String>();
+      for (var payment in payments) {
+        paymentTypes.add(PaymentType(type: payment));
+      }
+    }
+
     return RoutePoint(
       name: jsonData['name'] ?? "",
       dsc: jsonData['dsc'] ?? "",
       note: jsonData['note'] ?? "",
-      lt: jsonData['lt'] ?? "",
-      ln: jsonData['ln'] ?? "",
+      lt: double.tryParse(jsonData['lt'].toString()) ?? 0,
+      ln: double.tryParse(jsonData['ln'].toString()) ?? 0,
+      needDetail: jsonData['need_detail'] ?? false,
       type: jsonData['type'] ?? "",
       placeId: jsonData['place_id'] ?? "",
       detail: jsonData['detail'] ?? "0",
       notes: jsonData['notes'] != null ? jsonData['notes'].cast<String>() : [],
+      canPickUp: jsonData['pick_up'] ?? false,
+      orderTariffs: orderTariffs,
+      paymentTypes: paymentTypes,
     );
   }
 
   factory RoutePoint.copy(RoutePoint routePoint) {
     return RoutePoint(
-        name: routePoint.name,
-        dsc: routePoint.dsc,
-        note: routePoint.note,
-        lt: routePoint.lt,
-        ln: routePoint.ln,
-        type: routePoint.type,
-        placeId: routePoint.placeId,
-        detail: routePoint.detail,
-        canPickUp: routePoint.canPickUp,
-        orderTariffs: routePoint.orderTariffs,
-        notes: routePoint.notes);
+      name: routePoint.name,
+      dsc: routePoint.dsc,
+      note: routePoint.note,
+      lt: routePoint.lt,
+      ln: routePoint.ln,
+      type: routePoint.type,
+      placeId: routePoint.placeId,
+      detail: routePoint.detail,
+      notes: routePoint.notes,
+      canPickUp: routePoint.canPickUp,
+      orderTariffs: routePoint.orderTariffs,
+      paymentTypes: routePoint.paymentTypes,
+    );
   }
 
   set note(String value) {
@@ -95,8 +119,8 @@ class RoutePoint {
         "place_id": placeId,
         "name": name,
         "dsc": dsc,
-        "lt": lt,
-        "ln": ln,
+        "lt": lt.toString(),
+        "ln": ln.toString(),
         "note": note,
         "notes": notes,
       };
@@ -107,6 +131,7 @@ class RoutePoint {
   }
 
   Future<void> checkPickUp() async {
+    return;
     if (canPickUp == null) {
       var response = await RestService().httpGet("/orders/pickup?lt=$lt&ln=$ln");
       if (response['status'] == 'OK') {
@@ -130,15 +155,16 @@ class RoutePoint {
         }
       }
     } else {
-      if (canPickUp!)
+      if (canPickUp!) {
         MapMarkersService().pickUpState = PickUpState.enabled;
-      else
+      } else {
         MapMarkersService().pickUpState = PickUpState.disabled;
+      }
     }
   }
 
   LatLng getLocation() {
-    return LatLng(double.parse(lt), double.parse(ln));
+    return LatLng(lt, ln);
   }
 
   Icon getIcon() {

@@ -193,15 +193,15 @@ Widget _termsText() {
     child: RichText(
       textAlign: TextAlign.left,
       text: TextSpan(style: defaultStyle, children: <TextSpan>[
-        const TextSpan(text: 'Нажимая кнопку "Получиь код", я соглашаюсь с '),
+        const TextSpan(text: 'Нажимая кнопку "Получить код", я соглашаюсь с '),
         TextSpan(
-            text: '"Лицензионым соглашением"',
+            text: '"Лицензионным соглашением"',
             style: linkStyle,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 MainApplication().launchURL(MainApplication().clientLinks['license_agreement']);
               }),
-        const TextSpan(text: ', а так же с обработкой моей персональной информации на условиях '),
+        const TextSpan(text: ', а так же с обработкою моей персональной информации на условиях '),
         TextSpan(
             text: '"Политики конфиденциальности"',
             style: linkStyle,

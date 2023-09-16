@@ -12,7 +12,7 @@ class Preferences {
 
   Preferences._internal();
 
-  String administrationPhone = "";
+  String supportPhone = "";
   String googleKey = "";
   bool mapDirections = false;
   List<PaymentType> paymentTypes = [];
@@ -30,7 +30,7 @@ class Preferences {
   void parseData(Map<String, dynamic> jsonData) {
     DebugPrint().log(TAG, "parseData", jsonData);
 
-    administrationPhone = jsonData['administration_phone'] ?? "";
+    supportPhone = jsonData['support_phone'] ?? "";
     googleKey = jsonData['google_key'] ?? "";
 
     if (jsonData['system'] != null) {
@@ -69,7 +69,7 @@ class Preferences {
   }
 
   Map<String, dynamic> toJson() => {
-        "administrationPhone": administrationPhone,
+        "administrationPhone": supportPhone,
         "paymentTypes": paymentTypes,
         "orderTariffs": orderTariffs,
       };

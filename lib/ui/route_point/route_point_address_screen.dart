@@ -25,16 +25,16 @@ class RoutePointAddressScreen extends StatelessWidget {
 
     numberRoutePointTextField = RoutePointTextField(
       hintText: "Номер дома",
-      onChanged: (value) => _autocompleteStreetAddress(routeStreet.placeId, numberRoutePointTextField, splashRoutePointTextField),
+      onChanged: (value) => _autocompleteStreetAddress(routeStreet, numberRoutePointTextField, splashRoutePointTextField),
       autoFocus: true,
       onSubmitted: (value) => FocusScope.of(context).requestFocus(textSecondFocusNode),
     );
     splashRoutePointTextField = RoutePointTextField(
       hintText: "Строение/корпус",
-      onChanged: (value) => _autocompleteStreetAddress(routeStreet.placeId, numberRoutePointTextField, splashRoutePointTextField),
+      onChanged: (value) => _autocompleteStreetAddress(routeStreet, numberRoutePointTextField, splashRoutePointTextField),
       focusNode: textSecondFocusNode,
     );
-    _autocompleteStreetAddress(routeStreet.placeId, numberRoutePointTextField, splashRoutePointTextField);
+    _autocompleteStreetAddress(routeStreet, numberRoutePointTextField, splashRoutePointTextField);
 
     return Scaffold(
       appBar: AppBar(
@@ -113,7 +113,7 @@ class RoutePointAddressScreen extends StatelessWidget {
     );
   }
 
-  _autocompleteStreetAddress(String route, RoutePointTextField? numberRoutePointTextField, RoutePointTextField? splashRoutePointTextField) {
+  _autocompleteStreetAddress(RoutePoint route, RoutePointTextField? numberRoutePointTextField, RoutePointTextField? splashRoutePointTextField) {
     String number = "", splash = "";
     if (numberRoutePointTextField != null) {
       number = numberRoutePointTextField.value;
@@ -121,19 +121,18 @@ class RoutePointAddressScreen extends StatelessWidget {
     if (splashRoutePointTextField != null) {
       splash = splashRoutePointTextField.value;
     }
-    if (route.isNotEmpty && route != "") {
-      AppBlocs().geoAutocompleteAddressController?.sink.add("searching_");
-      GeoService().autocompleteHouse(route, number, splash)!.then((result) {
-        if (result == null)
-          AppBlocs().geoAutocompleteAddressController?.sink.add("not_found_");
-        else {
-          AppBlocs().geoAutocompleteAddressController?.sink.add(result);
-        }
-      }).catchError((e) {
-        DebugPrint().log(TAG, "_autocomplete address catchError", e.toString());
-      });
-    } else {
-      AppBlocs().geoAutocompleteAddressController?.sink.add("null_");
-    }
+
+    AppBlocs().geoAutocompleteAddressController?.sink.add("searching_");
+    GeoService().autocompleteAddress(route, number, splash).then((result) {
+      if (result == null) {
+        List<RoutePoint> listRoutePoints = [];
+        listRoutePoints.add(route);
+        AppBlocs().geoAutocompleteAddressController?.sink.add(listRoutePoints);
+      } else {
+        AppBlocs().geoAutocompleteAddressController?.sink.add(result);
+      }
+    }).catchError((e) {
+      DebugPrint().log(TAG, "_autocomplete address catchError", e.toString());
+    });
   }
 }

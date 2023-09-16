@@ -1,4 +1,9 @@
+import 'dart:ffi';
+
+import 'package:logger/logger.dart';
+
 import '../services/rest_service.dart';
+import '../services/rest_service2.dart';
 import '../ui/utils/core.dart';
 import 'main_application.dart';
 
@@ -24,20 +29,20 @@ class Profile {
     return res;
   }
 
-  Future<bool> auth() async {
+  Future<String> auth() async {
     String url = "/profile/auth";
     if (MainApplication().pushToken != "") {
       url += "?push_token=${MainApplication().pushToken}";
     }
 
-    Map<String, dynamic> restResult = await RestService().httpGet(url);
+    Map<String, dynamic> restResult = await RestService2().httpGet(url);
+    // Logger().v(restResult.toString());
     DebugPrint().log(TAG, "auth", restResult.toString());
     if (restResult['status'] == 'OK') {
       MainApplication().parseData(restResult['result']);
       if (restResult['result'].containsKey("profile")) {
-        restResult = await RestService().httpGet("/data");
-        MainApplication().parseData(restResult['result']);
-        return true;
+        Map<String, dynamic> restResultData = await RestService().httpGet("/data");
+        MainApplication().parseData(restResultData['result']);
       }
     }
     if (restResult['status'] == 'UNAUTHORIZED') {
@@ -45,7 +50,7 @@ class Profile {
         MainApplication().parseData(restResult['error']);
       }
     }
-    return false;
+    return restResult['status'];
   }
 
   Future<String> login() async {

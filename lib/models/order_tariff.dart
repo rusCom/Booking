@@ -15,7 +15,7 @@ class OrderTariff {
 
   String get name {
     switch (type) {
-      case "econom":
+      case "economy":
         return "Эконом";
       case "comfort":
         return "Комфорт";
@@ -36,7 +36,7 @@ class OrderTariff {
 
   String get iconName {
     switch (type) {
-      case "econom":
+      case "economy":
         return "assets/icons/ic_tariff_econom.png";
       case "comfort":
         return "assets/icons/ic_tariff_comfort.png";
@@ -56,7 +56,7 @@ class OrderTariff {
 
   bool get wishesBabySeats {
     switch (type) {
-      case "econom":
+      case "economy":
         return true;
       case "comfort":
         return true;
@@ -70,7 +70,7 @@ class OrderTariff {
 
   bool get wishesPetTransportation {
     switch (type) {
-      case "econom":
+      case "economy":
         return true;
       case "comfort":
         return true;
@@ -82,7 +82,7 @@ class OrderTariff {
 
   bool get wishesNonSmokingSalon {
     switch (type) {
-      case "econom":
+      case "economy":
         return true;
       case "comfort":
         return true;
@@ -94,7 +94,7 @@ class OrderTariff {
 
   bool get wishesConditioner {
     switch (type) {
-      case "econom":
+      case "economy":
         return true;
       case "comfort":
         return true;

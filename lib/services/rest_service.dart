@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:global_configuration/global_configuration.dart';
+import 'package:global_configs/global_configs.dart';
 
 import '../models/main_application.dart';
 import '../models/preferences.dart';
@@ -17,22 +17,22 @@ class RestService {
 
   RestService._internal();
 
-  int _curRestIndex = 0;
+  int _curRestIndex = 1;
 
   Future<dynamic> httpPost(String path, Map<String, dynamic> body) async {
     DebugPrint().log(TAG, "httpPost", "path = $path");
     var result;
 
     http.Response? response;
-    String url = GlobalConfiguration().get("restHost")[_curRestIndex] + path;
+    String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
     response = await _httpPostH(url, json.encode(body));
     if (response == null) {
-      for (var host in GlobalConfiguration().get("restHost")) {
-        if ((response == null) & (GlobalConfiguration().get("restHost").indexOf(host) != _curRestIndex)) {
+      for (var host in GlobalConfigs().get("restHost")) {
+        if ((response == null) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
           url = host + path;
           response = await _httpPostH(url, json.encode(body));
           if (response != null) {
-            _curRestIndex = GlobalConfiguration().get("restHost").indexOf(host);
+            _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
           }
         }
       } // for (var host in AppSettings.restHost){
@@ -52,16 +52,16 @@ class RestService {
     late Map<String, dynamic> result;
 
     http.Response? response;
-    String url = GlobalConfiguration().get("restHost")[_curRestIndex] + path;
+    String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
     DebugPrint().log(TAG, "httpGet", "path = $url");
     response = await _httpGetH(url);
     if (response == null) {
-      for (var host in GlobalConfiguration().get("restHost")) {
-        if ((response == null) & (GlobalConfiguration().get("restHost").indexOf(host) != _curRestIndex)) {
+      for (var host in GlobalConfigs().get("restHost")) {
+        if ((response == null) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
           url = host + path;
           response = await _httpGetH(url);
           if (response != null) {
-            _curRestIndex = GlobalConfiguration().get("restHost").indexOf(host);
+            _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
           }
         }
       } // for (var host in AppSettings.restHost){
@@ -119,15 +119,20 @@ class RestService {
   String _authHeader() {
     var header = {
       "deviceId": MainApplication().deviceId,
-      "dispatching": GlobalConfiguration().getValue("dispatchingToken"),
+      "dispatching": GlobalConfigs().get("dispatchingToken"),
       "lt": MainApplication().currentPosition?.latitude,
       "ln": MainApplication().currentPosition?.longitude,
+      "location": MainApplication().currentPosition?.toJson(),
       "platform": "android",
       "token": MainApplication().clientToken,
-      "test": GlobalConfiguration().getValue("isTest"),
+      "test": GlobalConfigs().get("isTest"),
     };
 
+    DebugPrint().log(TAG, "_authHeader", header);
+
     var bytes = utf8.encode(header.toString());
-    return base64.encode(bytes);
+    var res = base64.encode(bytes);
+    DebugPrint().log(TAG, "_authHeader", res);
+    return res;
   }
 }

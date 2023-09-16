@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../models/main_application.dart';
@@ -41,16 +43,21 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   }
 
   profileAuth() async {
-    bool isAuth = await Profile().auth();
-    if (isAuth) {
+    String isAuth = await Profile().auth();
+    // Logger().v(isAuth);
+    if (isAuth == "OK") {
       DebugPrint().log(TAG, "profileAuth", "success");
-      MainApplication().nearbyRoutePoint = (await GeoService().nearby())!;
+      // MainApplication().nearbyRoutePoint = (await GeoService().nearby())!;
       setState(() {
         state = "main";
       });
-    } else {
+    } else if (isAuth == "Unauthorized") {
       setState(() {
         state = "login";
+      });
+    } else {
+      setState(() {
+        state = "error";
       });
     }
   }
@@ -72,9 +79,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           Navigator.pushReplacement(
               context, PageTransition(type: PageTransitionType.fade, child: MainScreen(), duration: const Duration(seconds: 2)));
           // MainApplication().startTimer();
-        } else {
+        } else if (state == "login") {
           _logoMoveAnimationControllerBottom.forward();
           _logoMoveAnimationControllerLeft.forward();
+        } else {
+          _showMyDialog();
         }
       } else if (status == AnimationStatus.completed) _logoScaleAnimationController.reverse();
     });
@@ -106,6 +115,34 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         // Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: ProfileRegistrationScreen(background: background),duration: Duration(seconds: 2)));
       }
     });
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Ошибка связи с сервером'),
+                Text('Попробуйте немного попозже'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Хорошо'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

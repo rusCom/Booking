@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:global_configuration/global_configuration.dart';
+import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/main_application.dart';
@@ -62,7 +62,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: GlobalConfiguration().getValue("tmp_drawer") ? AppDrawer() : Container(),
+        drawer: GlobalConfigs().get("tmp_drawer") ? AppDrawer() : Container(),
         drawerEnableOpenDragGesture: false,
         body: Stack(
           children: <Widget>[
@@ -100,7 +100,7 @@ class _MainScreenState extends State<MainScreen> {
                 },
               ),
             ),
-            GlobalConfiguration().getValue("tmp_drawer")
+            GlobalConfigs().get("tmp_drawer")
                 ? Positioned(
                     top: 40,
                     left: 8,

@@ -13,6 +13,12 @@ class MainUtils {
     if (value == null) return def;
     return int.parse(value.toString());
   }
+
+  static String jsonGetString(Map<String, dynamic> jsonData, String fieldName, {String defaultValue = ""}) {
+    if (jsonData.isEmpty) return defaultValue;
+    if (!jsonData.containsKey(fieldName)) return defaultValue;
+    return jsonData[fieldName];
+  }
 }
 
 class Const {
@@ -39,6 +45,7 @@ class DebugPrint {
   final _routePointScreen = false;
 
   final _restService = false;
+  final _restService2 = false;
   final _geoService = false;
 
   final _mainApplication = false;
@@ -53,6 +60,7 @@ class DebugPrint {
     if (_allDebugPrint) {
       if (className == "SplashScreen" && _splashScreen) isPrint = true;
       if (className == "RestService" && _restService) isPrint = true;
+      if (className == "RestService2" && _restService2) isPrint = true;
       if (className == "Preferences" && _preferences) isPrint = true;
       if (className == "Profile" && _profile) isPrint = true;
 

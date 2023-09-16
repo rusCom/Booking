@@ -4,8 +4,9 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:global_configuration/global_configuration.dart';
+import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -44,6 +45,8 @@ class MainApplication {
   static AudioCache audioCache = AudioCache();
   static const audioAlarmOrderStateChange = "sounds/order_state_change.wav";
 
+  final player = AudioPlayer();
+
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
     distanceFilter: 100,
@@ -53,7 +56,8 @@ class MainApplication {
     _sharedPreferences = await SharedPreferences.getInstance();
     deviceId = (await PlatformDeviceId.getDeviceId)!;
 
-    await GlobalConfiguration().loadFromAsset("app_settings");
+    // await GlobalConfiguration().loadFromAsset("app_settings");
+    await GlobalConfigs().loadJsonFromdir('assets/cfg/app_settings.json');
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -92,7 +96,8 @@ class MainApplication {
   }
 
   playAudioAlarmOrderStateChange() {
-    audioCache.play(audioAlarmOrderStateChange);
+    // audioCache.play(audioAlarmOrderStateChange);
+    player.play(AssetSource(audioAlarmOrderStateChange));
   }
 
   Order get curOrder {
@@ -141,10 +146,19 @@ class MainApplication {
     DebugPrint().log(TAG, "parseData", jsonData);
 
     if (jsonData == null) return;
-    if (jsonData.containsKey('client_links')) {
-      clientLinks['privacy_policy'] = jsonData['client_links']['privacy_policy'];
-      clientLinks['license_agreement'] = jsonData['client_links']['license_agreement'];
+    clientLinks['privacy_policy'] = MainUtils.jsonGetString(jsonData, 'privacy_policy');
+    clientLinks['license_agreement'] = MainUtils.jsonGetString(jsonData, 'license_agreement');
+
+    if (jsonData.containsKey("client_links")) {
+      clientLinks['privacy_policy'] = jsonData['client_links']['support_phone'] ?? "";
+      clientLinks['license_agreement'] = jsonData['client_links']['license_agreement'] ?? "";
     }
+
+    if (jsonData.containsKey("nearby_geo_objects")) {
+      Iterable list = jsonData['nearby_geo_objects'];
+      nearbyRoutePoint = list.map((model) => RoutePoint.fromJson(model)).toList();
+    }
+
     if (jsonData.containsKey("preferences")) preferences.parseData(jsonData["preferences"]);
     if (jsonData.containsKey("profile")) Profile().parseData(jsonData["profile"]);
     if (jsonData.containsKey("order")) {

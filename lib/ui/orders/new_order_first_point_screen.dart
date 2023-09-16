@@ -1,19 +1,18 @@
-import 'package:booking/ui/utils/core.dart';
+import 'package:booking/services/rest_service2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 
 import '../../models/main_application.dart';
 import '../../models/preferences.dart';
 import '../../models/route_point.dart';
 import '../../services/app_blocs.dart';
-import '../../services/geo_service.dart';
 import '../../services/map_markers_service.dart';
 import '../route_point/route_point_screen.dart';
 
 class NewOrderFirstPointScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();
   final ValueChanged<RoutePoint>? onChanged;
-  BuildContext? _context;
 
   NewOrderFirstPointScreen({super.key, this.onChanged});
 
@@ -25,7 +24,6 @@ class NewOrderFirstPointScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _context = context;
     return Stack(
       children: <Widget>[
         Positioned(
@@ -68,13 +66,17 @@ class NewOrderFirstPointScreen extends StatelessWidget {
                             ),
                           ),
                         );
+
                         if (pickUpRoutePoint != null) {
-                          RoutePoint? destinationRoutePoint =
-                              await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
-                          if (destinationRoutePoint != null) {
-                            MainApplication().curOrder.addRoutePoint(pickUpRoutePoint);
-                            MainApplication().curOrder.addRoutePoint(destinationRoutePoint);
-                          }
+                          MainApplication().mapController?.animateCamera(
+                                CameraUpdate.newCameraPosition(
+                                  CameraPosition(
+                                    target: pickUpRoutePoint.getLocation(),
+                                    zoom: 17.0,
+                                  ),
+                                ),
+                              );
+                          // setPickUpRoutePoint(pickUpRoutePoint);
                         }
                       },
                     ),
@@ -108,7 +110,7 @@ class NewOrderFirstPointScreen extends StatelessWidget {
                   stream: AppBlocs().pickUpStream,
                   builder: (context, snapshot) {
                     return MaterialButton(
-                      onPressed: MapMarkersService().pickUpState == PickUpState.enabled ? _mainButtonClick : null,
+                      onPressed: () => MapMarkersService().pickUpState == PickUpState.enabled ? _mainButtonClick(context) : null,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(18), bottomRight: Radius.circular(18)),
                       ),
@@ -119,7 +121,7 @@ class NewOrderFirstPointScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
                         children: <Widget>[
-                          Container(width: 40, child: const Icon(Icons.find_replace)),
+                          const SizedBox(width: 40, child: Icon(Icons.find_replace)),
                           snapshot.data == PickUpState.disabled
                               ? const Expanded(
                                   child: Text(
@@ -161,7 +163,37 @@ class NewOrderFirstPointScreen extends StatelessWidget {
     MapMarkersService().zoomLevel = position.zoom;
   }
 
+  void setPickUpRoutePoint(RoutePoint routePoint) {
+    if (routePoint != MapMarkersService().pickUpRoutePoint) {
+      MapMarkersService().pickUpRoutePoint = routePoint;
+      if (routePoint.type == "street_address") {
+        setText(routePoint.name);
+      } else {
+        setText("${routePoint.name}, ${routePoint.dsc}");
+      }
+      if (routePoint.canPickUp) {
+        MapMarkersService().pickUpState = PickUpState.enabled;
+      } else {
+        MapMarkersService().pickUpState = PickUpState.disabled;
+      }
+      MapMarkersService().pickUpRoutePoint = routePoint;
+    }
+  }
+
   void onCameraIdle() {
+    RestService2()
+        .httpGet("/orders/pickup?lt=${MapMarkersService().pickUpLocation.latitude}&ln=${MapMarkersService().pickUpLocation.longitude}")
+        .then((response) {
+      // Logger().v(response.toString());
+      if (response['status'] == 'OK') {
+        RoutePoint routePoint = RoutePoint.fromJson(response['result']);
+        setPickUpRoutePoint(routePoint);
+      } else {
+        MapMarkersService().pickUpState = PickUpState.disabled;
+      }
+    });
+
+    /*
     GeoService().geocode(MapMarkersService().pickUpLocation).then((routePoint) {
       if (routePoint != MapMarkersService().pickUpRoutePoint) {
         MapMarkersService().pickUpRoutePoint = routePoint!;
@@ -185,10 +217,11 @@ class NewOrderFirstPointScreen extends StatelessWidget {
         MapMarkersService().pickUpRoutePoint.checkPickUp();
       }
     });
+     */
   }
 
-  void _mainButtonClick() async {
-    RoutePoint? routePoint = await Navigator.push<RoutePoint>(_context!, MaterialPageRoute(builder: (_context) => const RoutePointScreen()));
+  void _mainButtonClick(BuildContext context) async {
+    RoutePoint? routePoint = await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
     if (routePoint != null) {
       MainApplication().curOrder.addRoutePoint(MapMarkersService().pickUpRoutePoint);
       MainApplication().curOrder.addRoutePoint(routePoint);
