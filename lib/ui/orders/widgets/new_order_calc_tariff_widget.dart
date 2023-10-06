@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../models/main_application.dart';
 import '../../../models/order.dart';
+import '../../../models/order_state.dart';
 import '../../../models/order_tariff.dart';
 import '../../../models/preferences.dart';
 
 class NewOrderCalcTariffWidget extends StatelessWidget {
-  OrderTariff orderTariff = OrderTariff(type: "econom");
+  OrderTariff orderTariff = OrderTariff(type: "economy");
 
   NewOrderCalcTariffWidget(OrderTariff? orderTariff, {super.key}) {
     if (orderTariff != null) {
@@ -22,7 +23,7 @@ class NewOrderCalcTariffWidget extends StatelessWidget {
           onPressed: () {
             MainApplication().curOrder.selectedOrderTariff = orderTariff.type;
           },
-          shape: orderTariff.selected == true
+          shape: orderTariff.selected
               ? RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                   side: BorderSide(color: Preferences().mainColor, width: 2),
@@ -30,7 +31,7 @@ class NewOrderCalcTariffWidget extends StatelessWidget {
               : RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
-          padding: EdgeInsets.only(right: 8),
+          padding: const EdgeInsets.only(right: 8),
           color: Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -41,7 +42,7 @@ class NewOrderCalcTariffWidget extends StatelessWidget {
                   width: 70,
                 ),
                 Text(orderTariff.name),
-                MainApplication().curOrder.orderState == OrderState.new_order_calculating
+                MainApplication().curOrder.orderState == OrderState.newOrderCalculating
                     ? SizedBox(
                         height: 18,
                         width: 18,
@@ -54,7 +55,7 @@ class NewOrderCalcTariffWidget extends StatelessWidget {
                         height: 18,
                         width: 70,
                         child: Text(
-                          orderTariff.price + " \u20BD",
+                          "${orderTariff.price} \u20BD",
                           textAlign: TextAlign.center,
                         ),
                       ),

@@ -1,7 +1,7 @@
 {
   "dispatchingToken": "C3345D6297882D04F0AAE85A19611119",
   "geoToken": "fa6c3486-4e22-11ee-be56-0242ac120002",
-  "isTest": false,
+  "isTest": true,
   "restHost": [
     "http://api.ataxi24.ru:7580/ataxi/booking",
     "http://api.ataxi24.ru:5872",

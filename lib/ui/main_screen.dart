@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/main_application.dart';
 import '../models/order.dart';
+import '../models/order_state.dart';
 import '../models/preferences.dart';
 import '../services/app_blocs.dart';
 import '../services/map_markers_service.dart';
@@ -87,12 +88,12 @@ class _MainScreenState extends State<MainScreen> {
                 stream: AppBlocs().orderStateStream,
                 builder: (context, snapshot) {
                   switch (MainApplication().curOrder.orderState) {
-                    case OrderState.new_order:
+                    case OrderState.newOrder:
                       return newOrderFirstPointScreen;
-                    case OrderState.new_order_calculating:
+                    case OrderState.newOrderCalculating:
                       newOrderCalcScreen.mapBounds();
                       return newOrderCalcScreen;
-                    case OrderState.new_order_calculated:
+                    case OrderState.newOrderCalculated:
                       return newOrderCalcScreen;
                     default:
                       return OrderSlidingPanel();
@@ -199,7 +200,7 @@ class _MainScreenState extends State<MainScreen> {
     _mapController = controller;
 
     MainApplication().mapController = controller;
-    if (MainApplication().curOrder.orderState == OrderState.new_order) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrder) {
       MapMarkersService().pickUpLocation = MainApplication().currentLocation;
     }
     _onCameraIdle();
@@ -209,13 +210,13 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onCameraMove(CameraPosition position) {
-    if (MainApplication().curOrder.orderState == OrderState.new_order) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrder) {
       newOrderFirstPointScreen.onCameraMove(position);
     }
   }
 
   void _onCameraIdle() {
-    if (MainApplication().curOrder.orderState == OrderState.new_order) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrder) {
       newOrderFirstPointScreen.onCameraIdle();
     }
   }
@@ -244,11 +245,11 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     // Если статус заказа - идет расчёт стоимости, то ничего не делаем
-    if (MainApplication().curOrder.orderState == OrderState.new_order_calculating) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculating) {
       return false;
     }
     // Если расчёт стоимости произведен, то возвращаем на новый заказ
-    if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
       newOrderCalcScreen.backPressed();
       return false;
     }

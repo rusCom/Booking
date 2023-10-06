@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
 
 import '../services/app_blocs.dart';
@@ -15,13 +16,10 @@ class RoutePoint {
   final double ln;
   final String type;
   final String placeId;
-  final String detail;
   final bool needDetail;
   final List<String> notes;
   Key key = ValueKey(const Uuid().v1());
   String _note = "";
-  List<OrderTariff> orderTariffs = [];
-  List<PaymentType> paymentTypes = [];
   bool canPickUp;
 
   RoutePoint(
@@ -32,10 +30,7 @@ class RoutePoint {
       this.type = "",
       this.placeId = "",
       this.needDetail = false,
-      this.detail = "",
       this.canPickUp = false,
-      this.orderTariffs = const [],
-      this.paymentTypes = const [],
       this.notes = const [],
       note = ""}) {
     key = ValueKey(const Uuid().v1());
@@ -67,11 +62,8 @@ class RoutePoint {
       needDetail: jsonData['need_detail'] ?? false,
       type: jsonData['type'] ?? "",
       placeId: jsonData['place_id'] ?? "",
-      detail: jsonData['detail'] ?? "0",
       notes: jsonData['notes'] != null ? jsonData['notes'].cast<String>() : [],
       canPickUp: jsonData['pick_up'] ?? false,
-      orderTariffs: orderTariffs,
-      paymentTypes: paymentTypes,
     );
   }
 
@@ -84,11 +76,8 @@ class RoutePoint {
       ln: routePoint.ln,
       type: routePoint.type,
       placeId: routePoint.placeId,
-      detail: routePoint.detail,
       notes: routePoint.notes,
       canPickUp: routePoint.canPickUp,
-      orderTariffs: routePoint.orderTariffs,
-      paymentTypes: routePoint.paymentTypes,
     );
   }
 
@@ -115,14 +104,13 @@ class RoutePoint {
   }
 
   Map<String, dynamic> toJson() => {
-        "payments": paymentTypes,
         "place_id": placeId,
         "name": name,
         "dsc": dsc,
+        "type": type,
         "lt": lt.toString(),
         "ln": ln.toString(),
         "note": note,
-        "notes": notes,
       };
 
   @override
@@ -136,17 +124,6 @@ class RoutePoint {
       var response = await RestService().httpGet("/orders/pickup?lt=$lt&ln=$ln");
       if (response['status'] == 'OK') {
         if (response['result']['pick_up'].toString() == "true") {
-          orderTariffs = [];
-          List<String> tariffs = response['result']['tariffs'].cast<String>();
-          for (var tariff in tariffs) {
-            orderTariffs.add(OrderTariff(type: tariff));
-          }
-
-          paymentTypes = [];
-          List<String> payments = response['result']['payments'].cast<String>();
-          for (var payment in payments) {
-            paymentTypes.add(PaymentType(type: payment));
-          }
           canPickUp = true;
           MapMarkersService().pickUpState = PickUpState.enabled;
         } else {

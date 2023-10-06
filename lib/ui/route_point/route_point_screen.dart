@@ -4,6 +4,7 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 import '../../models/main_application.dart';
 import '../../models/order.dart';
+import '../../models/order_state.dart';
 import '../../models/preferences.dart';
 import '../../models/route_point.dart';
 import '../../services/app_blocs.dart';
@@ -61,12 +62,12 @@ class RoutePointScreen extends StatelessWidget {
               leading: routePoint.getIcon(),
               onTap: () async {
                 DebugPrint().log(TAG, "onTap", routePoint.name);
-                if (routePoint.detail == '1') {
-                  Navigator.pop(context, routePoint);
-                } else {
+                if (routePoint.needDetail) {
                   GeoService().detail(routePoint).then((routePoint) {
                     Navigator.pop(context, routePoint);
                   });
+                } else {
+                  Navigator.pop(context, routePoint);
                 }
               },
             );
@@ -112,7 +113,7 @@ class RoutePointScreen extends StatelessWidget {
                 leading: routePoint.getIcon(),
                 onTap: () async {
                   if (routePoint.type == 'route') {
-                    if (routePoint.detail == '0') {
+                    if (routePoint.needDetail) {
                       GeoService().detail(routePoint);
                     }
 
@@ -122,12 +123,12 @@ class RoutePointScreen extends StatelessWidget {
                     if (routePointAddress != null) {
                       Navigator.pop(context, routePointAddress);
                     }
-                  } else if (routePoint.detail == '1') {
-                    Navigator.pop(context, routePoint);
-                  } else {
+                  } else if (routePoint.needDetail) {
                     GeoService().detail(routePoint).then((routePoint) {
                       Navigator.pop(context, routePoint);
                     });
+                  } else {
+                    Navigator.pop(context, routePoint);
                   }
                 },
               );
@@ -140,7 +141,7 @@ class RoutePointScreen extends StatelessWidget {
   }
 
   Widget _returnRoutePoint(BuildContext context) {
-    if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
       if (MainApplication().curOrder.routePoints.first.placeId != MainApplication().curOrder.routePoints.last.placeId) {
         return ListTileMoreCustomizable(
           leading: const Icon(Icons.cached),

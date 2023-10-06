@@ -23,7 +23,7 @@ class NewOrderCalcTariffCheckWidget extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                _getOrderTariffContainer("econom"),
+                _getOrderTariffContainer("economy"),
                 _getOrderTariffContainer("comfort"),
                 _getOrderTariffContainer("business"),
                 _getOrderTariffContainer("delivery"),

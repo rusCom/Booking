@@ -3,19 +3,20 @@ import 'package:progress_indicators/progress_indicators.dart';
 
 import '../../../models/main_application.dart';
 import '../../../models/order.dart';
+import '../../../models/order_state.dart';
 
 class OrderSlidingPanelCaption extends StatelessWidget {
   String getTitle() {
     switch (MainApplication().curOrder.orderState) {
-      case OrderState.search_car:
+      case OrderState.searchCar:
         return "Поиск машины";
-      case OrderState.drive_to_client:
+      case OrderState.driveToClient:
         return "К Вам едет";
-      case OrderState.drive_at_client:
+      case OrderState.driveAtClient:
         return "Вас ожидает";
-      case OrderState.paid_idle:
+      case OrderState.paidIdle:
         return "Платный простой";
-      case OrderState.client_in_car:
+      case OrderState.clientInCar:
         return "В пути";
       default:
         return "Не известный статус";
@@ -24,7 +25,7 @@ class OrderSlidingPanelCaption extends StatelessWidget {
 
   String getSubTitle() {
     switch (MainApplication().curOrder.orderState) {
-      case OrderState.search_car:
+      case OrderState.searchCar:
         return "Подбираем автомобиль на ваш заказ";
       default:
         final agent = MainApplication().curOrder.agent;
@@ -64,7 +65,7 @@ class OrderSlidingPanelCaption extends StatelessWidget {
                 getTitle(),
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-              MainApplication().curOrder.orderState == OrderState.search_car
+              MainApplication().curOrder.orderState == OrderState.searchCar
                   ? JumpingDotsProgressIndicator(
                       fontSize: 20.0,
                     )

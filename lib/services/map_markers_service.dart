@@ -8,6 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/main_application.dart';
 import '../models/order.dart';
+import '../models/order_state.dart';
 import '../models/route_point.dart';
 import '../ui/utils/core.dart';
 import 'app_blocs.dart';
@@ -165,14 +166,14 @@ class MapMarkersService {
   }
 
   void refresh() {
-    if (MainApplication().curOrder.orderState == OrderState.new_order) {
+    if (MainApplication().curOrder.orderState == OrderState.newOrder) {
       RoutePoint? pickUpRoutePoint = MainApplication().curOrder.routePoints.first;
       Marker? updatedPickUpMarker = _mapPickUpMarker?.copyWith(
         positionParam: pickUpRoutePoint.getLocation(),
       );
       _markers[_mapPickUpMarkerID] = updatedPickUpMarker!;
-    } else if (MainApplication().curOrder.orderState == OrderState.new_order_calculating ||
-        MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
+    } else if (MainApplication().curOrder.orderState == OrderState.newOrderCalculating ||
+        MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
       _markers.clear();
       if (MainApplication().curOrder.routePoints.length > 2) {
         for (int index = 1; index < (MainApplication().curOrder.routePoints.length - 1); index++) {
@@ -247,10 +248,10 @@ class MapMarkersService {
   }
 
   LatLngBounds mapBounds() {
-    if (MainApplication().curOrder.orderState == OrderState.drive_to_client) return _agentPickUpBounds;
-    if (MainApplication().curOrder.orderState == OrderState.drive_at_client) return _agentPickUpBounds;
-    if (MainApplication().curOrder.orderState == OrderState.paid_idle) return _agentPickUpBounds;
-    if (MainApplication().curOrder.orderState == OrderState.client_in_car) return _agentDestinationBounds;
+    if (MainApplication().curOrder.orderState == OrderState.driveToClient) return _agentPickUpBounds;
+    if (MainApplication().curOrder.orderState == OrderState.driveAtClient) return _agentPickUpBounds;
+    if (MainApplication().curOrder.orderState == OrderState.paidIdle) return _agentPickUpBounds;
+    if (MainApplication().curOrder.orderState == OrderState.clientInCar) return _agentDestinationBounds;
 
     return calcBounds(List<Marker>.of(_markers.values));
   }

@@ -91,7 +91,7 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
           children: [
             Container(
               height: 200,
-              child: Text(order.cost),
+              child: Text(order.price),
             ),
           ],
         ),

@@ -90,28 +90,6 @@ class GeoService {
     return routePoint;
   }
 
-  Future<RoutePoint?> geocode(LatLng location) async {
-    if (location == _lastGeoCodeLocation) return _lastGeoCodeRoutePoint;
-    String url = "http://api.ataxi24.ru:7580/geo/geocode?lt=${location.latitude}&ln=${location.longitude}"
-        "&google_key=${MainApplication().preferences.googleKey}&token=${GlobalConfigs().get("geoToken")}";
-    /*
-    DebugPrint().log(TAG, "geocode", "url = $url");
-    http.Response response = await http.get(Uri.parse(url));
-    if (response.statusCode != 200) return null;
-    var result = json.decode(response.body);
-    */
-    var result = await RestService2.httpGET(url);
-
-    DebugPrint().log(TAG, "geocode", "result = $result");
-    if (result['status'] == 'OK') {
-      _lastGeoCodeLocation = location;
-      RoutePoint routePoint = RoutePoint.fromJson(result['result']);
-      _lastGeoCodeRoutePoint = routePoint;
-      return routePoint;
-    }
-    return null;
-  }
-
   Future<bool> geocodeReplaceAddress(String lt, String ln, String place) async {
     String url = "http://geo.toptaxi.org/geocode/replace/address?lt=$lt&ln=$ln&place=$place&phone=${Profile().phone}";
     DebugPrint().log(TAG, "geocodeReplaceAddress", "url = $url");

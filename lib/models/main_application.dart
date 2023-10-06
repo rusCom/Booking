@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../services/rest_service.dart';
 import '../ui/utils/core.dart';
 import 'order.dart';
+import 'order_state.dart';
 import 'preferences.dart';
 import 'profile.dart';
 import 'route_point.dart';
@@ -68,7 +69,16 @@ class MainApplication {
 
     if (currentPosition == null) {
       currentPosition = const Position(
-          latitude: 54.7184554, longitude: 55.9257656, accuracy: 0, altitude: 0, speed: 0, timestamp: null, heading: 0, speedAccuracy: 0);
+          latitude: 54.7184554,
+          longitude: 55.9257656,
+          accuracy: 0.0,
+          altitude: 0.0,
+          speed: 0.0,
+          heading: 0.0,
+          speedAccuracy: 0.0,
+          altitudeAccuracy: 0.0,
+          timestamp: null,
+          headingAccuracy: 0.0);
       _lastLocation = false;
     }
 
@@ -165,10 +175,10 @@ class MainApplication {
       if (jsonData["order"].toString() != "{}") {
         curOrder.parseData(jsonData["order"]);
       } else {
-        curOrder.orderState = OrderState.new_order;
+        curOrder.orderState = OrderState.newOrder;
       }
     } else {
-      curOrder.orderState = OrderState.new_order;
+      curOrder.orderState = OrderState.newOrder;
     }
   }
 

@@ -368,7 +368,7 @@ class OrderModalBottomSheets {
     ).whenComplete(() {
       String note = "";
       if (entranceController.text != "") {
-        note = entranceController.text + " подъезд";
+        note = "${entranceController.text} подъезд";
       } else if (noteController.text != "") {
         note = noteController.text;
       }

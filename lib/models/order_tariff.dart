@@ -2,14 +2,18 @@ import 'main_application.dart';
 
 class OrderTariff {
   String type;
-  String price;
+  int price;
 
-  OrderTariff({this.type = "", this.price = ""});
+  OrderTariff({required this.type, this.price = 0}) {
+    if (type == "econom") {
+      type = "economy";
+    }
+  }
 
   factory OrderTariff.fromJson(Map<String, dynamic> json) {
     return OrderTariff(
       type: json['type'] ?? "",
-      price: json['price'] != null ? json['price'].toString() : "",
+      price: json['price'],
     );
   }
 
@@ -19,7 +23,6 @@ class OrderTariff {
         return "Эконом";
       case "comfort":
         return "Комфорт";
-
       case "business":
         return "Бизнес";
       case "delivery":
@@ -37,7 +40,7 @@ class OrderTariff {
   String get iconName {
     switch (type) {
       case "economy":
-        return "assets/icons/ic_tariff_econom.png";
+        return "assets/icons/ic_tariff_economy.png";
       case "comfort":
         return "assets/icons/ic_tariff_comfort.png";
       case "business":
@@ -51,7 +54,7 @@ class OrderTariff {
       case "express":
         return "assets/icons/ic_tariff_express.png";
     }
-    return "assets/icons/ic_tariff_econom.png";
+    return "assets/icons/ic_tariff_economy.png";
   }
 
   bool get wishesBabySeats {
@@ -105,17 +108,11 @@ class OrderTariff {
   }
 
   bool get selected {
-    if (type == MainApplication().curOrder?.selectedOrderTariff) return true;
+    if (type == MainApplication().curOrder.selectedOrderTariff) return true;
     return false;
   }
 
-  Map<String, dynamic> toJson() => {
-        'type': type,
-        'name': name,
-        'price': price,
-        'selected': selected,
-        "wishesBabySeats": wishesBabySeats,
-      };
+  Map<String, dynamic> toJson() => {'type': type, 'name': name, 'price': price, 'selected': selected};
 
   @override
   String toString() {

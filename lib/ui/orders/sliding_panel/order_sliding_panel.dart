@@ -43,7 +43,7 @@ class OrderSlidingPanel extends StatelessWidget {
                       ),
                       title: Text("Стоимость поездки"),
                       subtitle: Text(MainApplication().curOrder.paymentType()!.choseName),
-                      trailing: Text(MainApplication().curOrder.cost + " \u20BD"),
+                      trailing: Text(MainApplication().curOrder.price + " \u20BD"),
                     ),
                     MediaQuery.removePadding(
                       context: context,

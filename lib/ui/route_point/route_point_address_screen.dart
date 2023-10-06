@@ -93,12 +93,12 @@ class RoutePointAddressScreen extends StatelessWidget {
                       subtitle: Text(routePoint.dsc),
                       leading: routePoint.getIcon(),
                       onTap: () async {
-                        if (routePoint.detail == '1') {
-                          Navigator.pop(context, routePoint);
-                        } else {
+                        if (routePoint.needDetail) {
                           GeoService().detail(routePoint).then((routePoint) {
                             Navigator.pop(context, routePoint);
                           });
+                        } else {
+                          Navigator.pop(context, routePoint);
                         }
                       },
                     );

@@ -20,7 +20,7 @@ void main() {
     await Firebase.initializeApp();
 
     /// Initializing the AppMetrica SDK.
-    await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
+    // await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
     runApp(MyApp());
   });
 }

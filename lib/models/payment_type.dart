@@ -8,18 +8,17 @@ class PaymentType {
   String name = "";
   String choseName = "";
   String iconName = "";
-  List<OrderTariff> orderTariffs = [];
 
-  PaymentType({this.type = "", this.orderTariffs = const []}) {
+  PaymentType({required this.type}) {
     switch (type) {
       case "cash":
         name = "Наличные";
-        choseName = "Наличный расчет";
+        choseName = "Наличный расчёт";
         iconName = "assets/icons/ic_payment_cash.svg";
         break;
       case "corporation":
         name = "Организация";
-        choseName = "За счет организации";
+        choseName = "За счёт организации";
         iconName = "assets/icons/ic_payment_corporation.svg";
         break;
       case "sberbank":
@@ -36,7 +35,7 @@ class PaymentType {
   }
 
   bool get selected {
-    if (type == MainApplication().curOrder?.selectedPaymentType) return true;
+    if (type == MainApplication().curOrder.selectedPaymentType) return true;
     return false;
   }
 
@@ -46,26 +45,7 @@ class PaymentType {
   @override
   int get hashCode => type.hashCode;
 
-  factory PaymentType.fromJson(Map<String, dynamic> jsonData) {
-    DebugPrint().log("PaymentType", "fromJson", jsonData.toString());
-
-    List<OrderTariff> orderTariffs = [];
-    if (jsonData.containsKey('tariffs')) {
-      Iterable list = jsonData["tariffs"];
-      orderTariffs = list.map((model) => OrderTariff.fromJson(model)).toList();
-    }
-
-    return PaymentType(
-      type: jsonData['type'] ?? "",
-      orderTariffs: orderTariffs,
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        "type": type,
-        "name": name,
-        "tariffs": orderTariffs.toString(),
-      };
+  Map<String, dynamic> toJson() => {"type": type, "name": name};
 
   @override
   String toString() {

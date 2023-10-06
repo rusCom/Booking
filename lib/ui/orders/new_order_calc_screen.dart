@@ -6,6 +6,7 @@ import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 import '../../models/main_application.dart';
 import '../../models/order.dart';
+import '../../models/order_state.dart';
 import '../../models/preferences.dart';
 import '../../models/route_point.dart';
 import '../../services/app_blocs.dart';
@@ -112,7 +113,7 @@ class NewOrderCalcScreen extends StatelessWidget {
                     trailing: IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () async {
-                        if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
+                        if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
                           if (MainApplication().curOrder.routePoints.length == 2) {
                             RoutePoint? routePoint =
                                 await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
@@ -128,7 +129,7 @@ class NewOrderCalcScreen extends StatelessWidget {
                     ),
                     horizontalTitleGap: 0.0,
                     onTap: (details) async {
-                      if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
+                      if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
                         if (MainApplication().curOrder.routePoints.length == 2) {
                           RoutePoint? routePoint = await Navigator.push<RoutePoint>(
                               context, MaterialPageRoute(builder: (context) => const RoutePointScreen(viewReturn: false)));
@@ -248,20 +249,20 @@ class NewOrderCalcScreen extends StatelessWidget {
   }
 
   void backPressed() {
-    if (MainApplication().curOrder.orderState == OrderState.new_order_calculated) {
-      LatLng location = MainApplication().curOrder.routePoints.first.getLocation();
-      MainApplication().curOrder.orderState = OrderState.new_order;
-      MapMarkersService().pickUpLocation = location;
+    //if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
+    LatLng location = MainApplication().curOrder.routePoints.first.getLocation();
+    MainApplication().curOrder.orderState = OrderState.newOrder;
+    MapMarkersService().pickUpLocation = location;
 
-      MainApplication().mapController?.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                target: location,
-                zoom: 17.0,
-              ),
+    MainApplication().mapController?.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: location,
+              zoom: 17.0,
             ),
-          );
-    }
+          ),
+        );
+    //}
   }
 
   void mapBounds() {
