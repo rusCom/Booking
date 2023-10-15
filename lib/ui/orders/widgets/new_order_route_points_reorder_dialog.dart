@@ -34,16 +34,13 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await MainApplication().curOrder.routePoints.first.checkPickUp();
         return true;
       },
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () async {
-              await MainApplication().curOrder.routePoints.first.checkPickUp();
-              if (!mounted) return;
+            onPressed: () {
               Navigator.pop(context);
             },
           ),

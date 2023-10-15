@@ -1,7 +1,6 @@
 import 'package:booking/services/rest_service2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:logger/logger.dart';
 
 import '../../models/main_application.dart';
 import '../../models/preferences.dart';
@@ -184,7 +183,6 @@ class NewOrderFirstPointScreen extends StatelessWidget {
     RestService2()
         .httpGet("/orders/pickup?lt=${MapMarkersService().pickUpLocation.latitude}&ln=${MapMarkersService().pickUpLocation.longitude}")
         .then((response) {
-      // Logger().v(response.toString());
       if (response['status'] == 'OK') {
         RoutePoint routePoint = RoutePoint.fromJson(response['result']);
         setPickUpRoutePoint(routePoint);
@@ -192,32 +190,6 @@ class NewOrderFirstPointScreen extends StatelessWidget {
         MapMarkersService().pickUpState = PickUpState.disabled;
       }
     });
-
-    /*
-    GeoService().geocode(MapMarkersService().pickUpLocation).then((routePoint) {
-      if (routePoint != MapMarkersService().pickUpRoutePoint) {
-        MapMarkersService().pickUpRoutePoint = routePoint!;
-        if (routePoint.type == "street_address" || routePoint.type == "premise") {
-          setText(routePoint.name);
-        } else {
-          setText("${routePoint.name}, ${routePoint.dsc}");
-        }
-
-        if (Preferences().geocodeMove) {
-          MainApplication().mapController?.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: routePoint.getLocation(),
-                    zoom: MapMarkersService().zoomLevel,
-                  ),
-                ),
-              );
-        }
-      } else {
-        MapMarkersService().pickUpRoutePoint.checkPickUp();
-      }
-    });
-     */
   }
 
   void _mainButtonClick(BuildContext context) async {

@@ -6,12 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:logger/logger.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../services/rest_service.dart';
+import '../services/rest_service2.dart';
 import '../ui/utils/core.dart';
 import 'order.dart';
 import 'order_state.dart';
@@ -218,7 +217,7 @@ class MainApplication {
   }
 
   _loadDataCycle() async {
-    Map<String, dynamic> restResult = await RestService().httpGet("/data");
+    Map<String, dynamic> restResult = await RestService2().httpGet("/data");
     if ((restResult['status'] == 'OK') & (restResult.containsKey("result"))) {
       parseData(restResult['result']);
     }

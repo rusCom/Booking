@@ -17,6 +17,7 @@ class OrderWishes {
     petTransportation = false;
     nonSmokingSalon = false;
     conditioner = false;
+    workDate = null;
   }
 
   int get count {
@@ -78,11 +79,14 @@ class OrderWishes {
 
   void parseData(Map<String, dynamic> jsonData) {
     driverNote = jsonData['driver_note'] ?? "";
-    orderBabySeats.parseData(jsonData['baby_seats']);
+    if (jsonData.containsKey('baby_seats')) {
+      orderBabySeats.parseData(jsonData['baby_seats']);
+    }
+
     petTransportation = MainUtils.parseBool(jsonData['pet_transportation']);
     nonSmokingSalon = MainUtils.parseBool(jsonData['non_smoking_salon']);
     conditioner = MainUtils.parseBool(jsonData['conditioner']);
-    workDate = jsonData["work_date"] != null ? DateTime.parse(jsonData["work_date"]) : DateTime.now();
+    workDate = jsonData["work_date"] != null ? DateTime.parse(jsonData["work_date"]) : null;
   }
 
   Map<String, dynamic> toJson() => {

@@ -1,7 +1,3 @@
-import 'dart:ffi';
-
-import 'package:logger/logger.dart';
-
 import '../services/rest_service.dart';
 import '../services/rest_service2.dart';
 import '../ui/utils/core.dart';
@@ -36,12 +32,11 @@ class Profile {
     }
 
     Map<String, dynamic> restResult = await RestService2().httpGet(url);
-    // Logger().v(restResult.toString());
     DebugPrint().log(TAG, "auth", restResult.toString());
     if (restResult['status'] == 'OK') {
       MainApplication().parseData(restResult['result']);
       if (restResult['result'].containsKey("profile")) {
-        Map<String, dynamic> restResultData = await RestService().httpGet("/data");
+        Map<String, dynamic> restResultData = await RestService2().httpGet("/data");
         MainApplication().parseData(restResultData['result']);
       }
     }

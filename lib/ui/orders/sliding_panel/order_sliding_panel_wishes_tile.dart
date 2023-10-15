@@ -77,7 +77,6 @@ class OrderSlidingPanelWishesTile extends StatelessWidget {
             maxChildSize: 1,
             minChildSize: 0.25,
             builder: (BuildContext context, ScrollController scrollController) {
-              // DebugPrint().flog(MainApplication().curOrder.orderTariff);
               return Container(
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(topRight: Const.modalBottomSheetsBorderRadius, topLeft: Const.modalBottomSheetsBorderRadius),

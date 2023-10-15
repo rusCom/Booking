@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/main_application.dart';
-import '../../../models/order.dart';
 import '../../../models/order_state.dart';
 import '../../../models/order_tariff.dart';
 import '../../../models/preferences.dart';

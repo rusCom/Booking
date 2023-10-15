@@ -1,11 +1,9 @@
-import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 import '../../models/main_application.dart';
-import '../../models/order.dart';
 import '../../models/order_state.dart';
 import '../../models/preferences.dart';
 import '../../models/route_point.dart';

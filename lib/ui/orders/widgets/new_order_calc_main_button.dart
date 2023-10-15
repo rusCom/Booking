@@ -1,8 +1,6 @@
-import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/main_application.dart';
-import '../../../models/order.dart';
 import '../../../models/order_state.dart';
 import '../../../models/preferences.dart';
 import '../../../services/app_blocs.dart';
@@ -85,7 +83,6 @@ class NewOrderMainButton extends StatelessWidget {
   void onMainButtonPressed() {
     if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
       MainApplication().curOrder.addOrder();
-      // DebugPrint().flog("onMainButtonPressed addOrder");
     }
   }
 }

@@ -78,7 +78,6 @@ class RestService2 {
         },
       );
     } catch (error) {
-      // Logger().v(error);
       result = <String, dynamic>{};
       result['status'] = "Service Unavailable";
       result['status_code'] = "503";
@@ -114,7 +113,6 @@ class RestService2 {
         },
       );
     } catch (error) {
-      // Logger().v(error);
       result = <String, dynamic>{};
       result['status'] = "Service Unavailable";
       result['status_code'] = "503";

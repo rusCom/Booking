@@ -1,13 +1,9 @@
-import 'dart:convert';
-
 import 'package:booking/models/preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:logger/logger.dart';
 
 import '../services/app_blocs.dart';
 import '../services/map_markers_service.dart';
-import '../services/rest_service.dart';
 import '../services/rest_service2.dart';
 import '../ui/utils/core.dart';
 import 'agent.dart';
@@ -67,7 +63,6 @@ class Order {
     final draggedItem = routePoints[draggingIndex];
     routePoints.removeAt(draggingIndex);
     routePoints.insert(newPositionIndex, draggedItem);
-    routePoints.first.checkPickUp();
     AppBlocs().orderRoutePointsController?.sink.add(routePoints);
     MapMarkersService().refresh();
     return true;
@@ -96,12 +91,12 @@ class Order {
     AppBlocs().orderRoutePointsController?.sink.add(routePoints);
   }
 
-  set orderState(OrderState value) {
-    if (_orderState != value) {
-      DebugPrint().log(TAG, "orderState", "new order state = $value");
+  set orderState(OrderState newOrderState) {
+    if (_orderState != newOrderState) {
+      DebugPrint().log(TAG, "orderState", "new order state = $newOrderState");
 
       bool startTimer = false;
-      _orderState = value;
+
       if (_selectedPaymentType == "") {
         _selectedPaymentType = "cash";
       }
@@ -109,12 +104,15 @@ class Order {
         _selectedOrderTariff = "economy";
       }
 
-      switch (_orderState) {
+      switch (newOrderState) {
         case OrderState.newOrder:
           orderWishes.clear();
           startTimer = false;
           moveToCurLocation();
           routePoints.clear();
+          if (_orderState.isNewOrderAlarmPlay) {
+            MainApplication().playAudioAlarmOrderStateChange();
+          }
           break;
         case OrderState.newOrderCalculating:
           startTimer = false;
@@ -153,6 +151,7 @@ class Order {
 
       MainApplication().dataCycle = startTimer;
 
+      _orderState = newOrderState;
       AppBlocs().orderStateController?.sink.add(_orderState);
     } // if (_orderState != value)
   }
@@ -160,9 +159,7 @@ class Order {
   Future<void> calcOrder() async {
     DebugPrint().log(TAG, "calcOrder", toString());
     orderState = OrderState.newOrderCalculating;
-
     var response = await RestService2().httpPost("/orders/calc", toJson());
-    // Logger().v(response);
     if ((response["status"] == "OK") & (orderState == OrderState.newOrderCalculating)) {
       var result = response["result"];
       guid = result['guid'];
@@ -177,7 +174,6 @@ class Order {
       tariffs.forEach((tariffType, tariffPrice) {
         orderTariffs.add(OrderTariff(type: tariffType, price: tariffPrice));
       });
-      // Logger().v(orderTariffs);
       orderState = OrderState.newOrderCalculated;
 
       DebugPrint().log(TAG, "calcOrder", toString());
@@ -208,7 +204,6 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> jsonData) {
     Order order = Order();
     order.parseData(jsonData, isAnimateCamera: false);
-    // DebugPrint().flog(order);
     return order;
   }
 
@@ -216,7 +211,7 @@ class Order {
     DebugPrint().log(TAG, "parseData", jsonData.toString());
     guid = jsonData['guid'];
     dispatcherPhone = jsonData['dispatcher_phone'] ?? "";
-    price = jsonData['price'] ?? "";
+    price = jsonData['price'].toString();
     selectedPaymentType = jsonData['payment'] ?? "";
     if (jsonData['wishes'] != null) {
       orderWishes.parseData(jsonData['wishes']);
@@ -224,8 +219,6 @@ class Order {
       orderWishes.clear();
     }
     canDeny = MainUtils.parseBool(jsonData['deny']);
-
-    // DebugPrint().flog(orderWishes.count);
 
     switch (jsonData['state']) {
       case "search_car":
@@ -274,8 +267,13 @@ class Order {
 
   bool animateCamera() {
     if (MainApplication().mapController != null) {
-      MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
-      return true;
+      try {
+        MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
+        return true;
+      } catch (error) {
+        // TODO: handle exception, for example by showing an alert to the user
+        return false;
+      }
     }
     return false;
   }
@@ -296,18 +294,17 @@ class Order {
   }
 
   note(String note) async {
-    Map<String, dynamic> restResult = await RestService().httpGet("/orders/note?uid=$guid&note=${Uri.encodeFull(note)}");
+    Map<String, dynamic> restResult = await RestService2().httpGet("/orders/note?guid=$guid&note=${Uri.encodeFull(note)}");
     MainApplication().parseData(restResult['result']);
     AppBlocs().orderStateController?.sink.add(_orderState);
   }
 
   deny(String reason) async {
-    Map<String, dynamic> restResult = await RestService().httpGet("/orders/deny?uid=$guid&reason=${Uri.encodeFull(reason)}");
+    Map<String, dynamic> restResult = await RestService2().httpGet("/orders/deny?guid=$guid&reason=${Uri.encodeFull(reason)}");
     MainApplication().parseData(restResult['result']);
   }
 
   addOrder() async {
-    Logger().v(jsonEncode(toJson()).toString());
     Map<String, dynamic> restResult = await RestService2().httpPost("/orders/add", toJson());
     MainApplication().parseData(restResult['result']);
   }

@@ -7,10 +7,8 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/main_application.dart';
-import '../models/order.dart';
 import '../models/order_state.dart';
 import '../models/route_point.dart';
-import '../ui/utils/core.dart';
 import 'app_blocs.dart';
 import 'geo_service.dart';
 
@@ -18,9 +16,12 @@ enum PickUpState { searching, enabled, disabled, init }
 
 class MapMarkersService {
   static final MapMarkersService _instance = MapMarkersService._internal();
+  String lastRoutePointPolylineData = "";
+
   factory MapMarkersService() {
     return _instance;
   }
+
   MapMarkersService._internal() {
     // initialization logic
   }
@@ -109,13 +110,10 @@ class MapMarkersService {
   set pickUpRoutePoint(RoutePoint value) {
     if (_pickUpRoutePoint != value) {
       _pickUpRoutePoint = value;
-      if (_pickUpRoutePoint != null) {
-        Marker? updatedPickUpMarker = _mapPickUpMarker?.copyWith(
-          positionParam: _pickUpRoutePoint?.getLocation(),
-        );
-        _markers[_mapPickUpMarkerID] = updatedPickUpMarker!;
-        _pickUpRoutePoint.checkPickUp();
-      }
+      Marker? updatedPickUpMarker = _mapPickUpMarker?.copyWith(
+        positionParam: _pickUpRoutePoint.getLocation(),
+      );
+      _markers[_mapPickUpMarkerID] = updatedPickUpMarker!;
     }
   }
 
@@ -142,7 +140,11 @@ class MapMarkersService {
   }
 
   Future<void> getMapPolyline() async {
-    if (MainApplication().preferences.mapDirections && MainApplication().curOrder.routePoints.length > 1) {
+    if (MainApplication().preferences.mapDirections &&
+        MainApplication().curOrder.routePoints.length > 1 &&
+        lastRoutePointPolylineData != MainApplication().curOrder.routePoints.toString()) {
+      lastRoutePointPolylineData = MainApplication().curOrder.routePoints.toString();
+
       List<String>? polylineData = await GeoService().directions(jsonEncode(MainApplication().curOrder.routePoints));
       if (polylineData != null) {
         polylineCoordinates = [];
@@ -158,7 +160,7 @@ class MapMarkersService {
         polylines[id] = polyline;
         AppBlocs().mapPolylinesController?.sink.add(polylines);
       }
-    } else {
+    } else if ((MainApplication().curOrder.routePoints.length == 1 || MainApplication().curOrder.routePoints.isEmpty) && polylines.isNotEmpty) {
       // если точка маршрута одна, то очистить данные
       polylines.clear();
       AppBlocs().mapPolylinesController?.sink.add(polylines);
@@ -270,7 +272,7 @@ class MapMarkersService {
         if (marker.position.longitude < y0!) y0 = marker.position.longitude;
       }
     }
-    x1 = (x1! + (x1 - x0!) * 0.15)!;
+    x1 = (x1! + (x1 - x0!) * 0.15);
     x0 = x0 - (x1 - x0) * 1.3;
     return LatLngBounds(northeast: LatLng(x1, y1!), southwest: LatLng(x0, y0!));
   }

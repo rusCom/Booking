@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:booking/services/map_markers_service.dart';
-import 'package:booking/services/rest_service2.dart';
 import 'package:global_configs/global_configs.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/main_application.dart';
@@ -18,10 +16,6 @@ class GeoService {
   factory GeoService() => _singleton;
 
   GeoService._internal();
-
-  RoutePoint? _lastGeoCodeRoutePoint;
-
-  LatLng _lastGeoCodeLocation = const LatLng(0, 0);
 
   Future<List<String>?> directions(String body) async {
     String url = "http://api.ataxi24.ru:7580/geo/directions?"

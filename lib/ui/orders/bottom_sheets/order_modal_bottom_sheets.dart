@@ -31,7 +31,6 @@ class OrderModalBottomSheets {
             maxChildSize: 1,
             minChildSize: 0.25,
             builder: (BuildContext context, ScrollController scrollController) {
-              // DebugPrint().flog(MainApplication().curOrder.orderTariff);
               return Container(
                 decoration: const BoxDecoration(borderRadius: BorderRadius.only(topRight: borderRadius, topLeft: borderRadius), color: Colors.white),
                 child: Padding(
@@ -76,7 +75,6 @@ class OrderModalBottomSheets {
         );
       },
     ).whenComplete(() {
-      // DebugPrint().flog(orderWishes);
       MainApplication().curOrder.orderWishes = orderWishes;
       MainApplication().curOrder.calcOrder();
       AppBlocs().newOrderWishesController?.sink.add(null);

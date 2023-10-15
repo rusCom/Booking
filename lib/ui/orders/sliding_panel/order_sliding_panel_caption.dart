@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 
 import '../../../models/main_application.dart';
-import '../../../models/order.dart';
 import '../../../models/order_state.dart';
 
 class OrderSlidingPanelCaption extends StatelessWidget {
+  final OrderState orderState;
+  const OrderSlidingPanelCaption({super.key, required this.orderState});
+
   String getTitle() {
-    switch (MainApplication().curOrder.orderState) {
+    switch (orderState) {
       case OrderState.searchCar:
         return "Поиск машины";
       case OrderState.driveToClient:
@@ -24,7 +26,7 @@ class OrderSlidingPanelCaption extends StatelessWidget {
   }
 
   String getSubTitle() {
-    switch (MainApplication().curOrder.orderState) {
+    switch (orderState) {
       case OrderState.searchCar:
         return "Подбираем автомобиль на ваш заказ";
       default:
@@ -41,7 +43,7 @@ class OrderSlidingPanelCaption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
+        const SizedBox(
           height: 12.0,
         ),
         Row(
@@ -50,11 +52,11 @@ class OrderSlidingPanelCaption extends StatelessWidget {
             Container(
               width: 30,
               height: 5,
-              decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.all(Radius.circular(12.0))),
+              decoration: BoxDecoration(color: Colors.grey[300], borderRadius: const BorderRadius.all(Radius.circular(12.0))),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 18.0,
         ),
         Center(
@@ -63,9 +65,9 @@ class OrderSlidingPanelCaption extends StatelessWidget {
             children: [
               Text(
                 getTitle(),
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-              MainApplication().curOrder.orderState == OrderState.searchCar
+              orderState == OrderState.searchCar
                   ? JumpingDotsProgressIndicator(
                       fontSize: 20.0,
                     )

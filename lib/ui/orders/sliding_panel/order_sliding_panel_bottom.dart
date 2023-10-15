@@ -2,33 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 import '../../../models/main_application.dart';
+import '../../../models/order.dart';
 
 class OrderSlidingPanelBottom extends StatelessWidget {
+  final Order curOrder;
+
+  const OrderSlidingPanelBottom({super.key, required this.curOrder});
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        MainApplication().curOrder.canDeny
+        curOrder.canDeny
             ? Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
                     FloatingActionButton(
-                      child: Icon(
+                      backgroundColor: Colors.white,
+                      onPressed: () {
+                        _showDenyOrderDialog(context, curOrder);
+                      },
+                      heroTag: "_denyOrder",
+                      child: const Icon(
                         Icons.clear,
                         color: Colors.black,
                       ),
-                      backgroundColor: Colors.white,
-                      onPressed: () {
-                        _showDenyOrderDialog(context);
-                      },
-                      heroTag: "_denyOrder",
                     ),
-                    Center(
+                    const Center(
                       child: Text('Отменить'),
                     ),
-                    Center(
+                    const Center(
                       child: Text('поездку'),
                     ),
                   ],
@@ -40,45 +45,45 @@ class OrderSlidingPanelBottom extends StatelessWidget {
           child: Column(
             children: <Widget>[
               FloatingActionButton(
-                child: Icon(
+                backgroundColor: Colors.white,
+                onPressed: () {
+                  MainApplication().launchURL("tel://${curOrder.dispatcherPhone}");
+                },
+                heroTag: "_dispathcerCall",
+                child: const Icon(
                   Icons.call,
                   color: Colors.lightGreen,
                 ),
-                backgroundColor: Colors.white,
-                onPressed: () {
-                  MainApplication().launchURL("tel://" + MainApplication().curOrder.dispatcherPhone);
-                },
-                heroTag: "_dispathcerCall",
               ),
-              Center(
+              const Center(
                 child: Text('Позвонить'),
               ),
-              Center(
+              const Center(
                 child: Text('диспетчеру'),
               ),
             ],
           ),
         ),
-        MainApplication().curOrder.agent != null
+        curOrder.agent != null
             ? Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   children: <Widget>[
                     FloatingActionButton(
-                      child: Icon(
+                      backgroundColor: Colors.white,
+                      onPressed: () {
+                        MainApplication().launchURL("tel://${curOrder.agent?.phone}");
+                      },
+                      heroTag: "_agentCall",
+                      child: const Icon(
                         Icons.phone_in_talk,
                         color: Colors.green,
                       ),
-                      backgroundColor: Colors.white,
-                      onPressed: () {
-                        MainApplication().launchURL("tel://${MainApplication().curOrder.agent?.phone}");
-                      },
-                      heroTag: "_agentCall",
                     ),
-                    Center(
+                    const Center(
                       child: Text('Позвонить'),
                     ),
-                    Center(
+                    const Center(
                       child: Text('водителю'),
                     ),
                   ],
@@ -89,34 +94,46 @@ class OrderSlidingPanelBottom extends StatelessWidget {
     );
   }
 
-  _showDenyOrderDialog(BuildContext context) {
+  _showDenyOrderDialog(BuildContext context, Order curOrder) {
     showModalBottomSheet(
         context: context,
         // isScrollControlled: true,
         builder: (BuildContext bc) {
           return Container(
-            color: Color(0xFF737373),
+            color: const Color(0xFF737373),
             child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.only(topLeft: const Radius.circular(10.0), topRight: const Radius.circular(10.0))),
+              decoration: const BoxDecoration(
+                  color: Colors.white, borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0))),
               // margin: EdgeInsets.only(left: 8, right: 8),
-              child: new Column(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ListTileMoreCustomizable(
-                      title: new Text("Долгая подача автомобиля"),
+                      title: const Text("Долгая подача автомобиля"),
                       onTap: (details) async {
-                        await MainApplication().curOrder.deny("Долгая подача автомобиля");
-                        Navigator.pop(context);
+                        await curOrder.deny("Долгая подача автомобиля");
+                        if (context.mounted) Navigator.pop(context);
                       }),
                   ListTileMoreCustomizable(
-                      title: new Text("Не указывать причину"),
+                      title: const Text("Водитель попросил сделать отбой"),
                       onTap: (details) async {
-                        await MainApplication().curOrder.deny("");
-                        Navigator.pop(context);
+                        await curOrder.deny("Водитель попросил сделать отбой");
+                        if (context.mounted) Navigator.pop(context);
                       }),
                   ListTileMoreCustomizable(
-                      title: new Text("Не отменять поездку"),
+                      title: const Text("Водитель не адекватный"),
+                      onTap: (details) async {
+                        await curOrder.deny("Водитель не адекватный");
+                        if (context.mounted) Navigator.pop(context);
+                      }),
+                  ListTileMoreCustomizable(
+                      title: const Text("Не указывать причину"),
+                      onTap: (details) async {
+                        await curOrder.deny("");
+                        if (context.mounted) Navigator.pop(context);
+                      }),
+                  ListTileMoreCustomizable(
+                      title: const Text("Не отменять поездку"),
                       onTap: (details) async {
                         Navigator.pop(context);
                       }),

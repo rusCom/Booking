@@ -44,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   profileAuth() async {
     String isAuth = await Profile().auth();
-    // Logger().v(isAuth);
     if (isAuth == "OK") {
       DebugPrint().log(TAG, "profileAuth", "success");
       // MainApplication().nearbyRoutePoint = (await GeoService().nearby())!;

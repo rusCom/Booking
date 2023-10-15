@@ -1,6 +1,4 @@
-import '../ui/utils/core.dart';
 import 'main_application.dart';
-import 'order_tariff.dart';
 
 class PaymentType {
   final String TAG = (PaymentType).toString(); // ignore: non_constant_identifier_names

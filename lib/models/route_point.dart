@@ -1,13 +1,9 @@
+import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
 
 import '../services/app_blocs.dart';
-import '../services/map_markers_service.dart';
-import '../services/rest_service.dart';
-import 'order_tariff.dart';
-import 'payment_type.dart';
 
 class RoutePoint {
   final String name;
@@ -38,32 +34,17 @@ class RoutePoint {
   }
 
   factory RoutePoint.fromJson(Map<String, dynamic> jsonData) {
-    List<OrderTariff> orderTariffs = [];
-    if (jsonData.containsKey('tariffs')) {
-      List<String> tariffs = jsonData['tariffs'].cast<String>();
-      for (var tariff in tariffs) {
-        orderTariffs.add(OrderTariff(type: tariff));
-      }
-    }
-    List<PaymentType> paymentTypes = [];
-    if (jsonData.containsKey('payments')) {
-      List<String> payments = jsonData['payments'].cast<String>();
-      for (var payment in payments) {
-        paymentTypes.add(PaymentType(type: payment));
-      }
-    }
-
     return RoutePoint(
       name: jsonData['name'] ?? "",
       dsc: jsonData['dsc'] ?? "",
       note: jsonData['note'] ?? "",
       lt: double.tryParse(jsonData['lt'].toString()) ?? 0,
       ln: double.tryParse(jsonData['ln'].toString()) ?? 0,
-      needDetail: jsonData['need_detail'] ?? false,
+      needDetail: MainUtils.parseBool(jsonData['need_detail']),
       type: jsonData['type'] ?? "",
       placeId: jsonData['place_id'] ?? "",
       notes: jsonData['notes'] != null ? jsonData['notes'].cast<String>() : [],
-      canPickUp: jsonData['pick_up'] ?? false,
+      canPickUp: MainUtils.parseBool(jsonData['pick_up']),
     );
   }
 
@@ -90,9 +71,6 @@ class RoutePoint {
     if (_note == "") {
       return "Подъезд";
     }
-    if (_note == null) {
-      return "Подъезд";
-    }
     return _note;
   }
 
@@ -116,28 +94,6 @@ class RoutePoint {
   @override
   String toString() {
     return toJson().toString();
-  }
-
-  Future<void> checkPickUp() async {
-    return;
-    if (canPickUp == null) {
-      var response = await RestService().httpGet("/orders/pickup?lt=$lt&ln=$ln");
-      if (response['status'] == 'OK') {
-        if (response['result']['pick_up'].toString() == "true") {
-          canPickUp = true;
-          MapMarkersService().pickUpState = PickUpState.enabled;
-        } else {
-          canPickUp = false;
-          MapMarkersService().pickUpState = PickUpState.disabled;
-        }
-      }
-    } else {
-      if (canPickUp!) {
-        MapMarkersService().pickUpState = PickUpState.enabled;
-      } else {
-        MapMarkersService().pickUpState = PickUpState.disabled;
-      }
-    }
   }
 
   LatLng getLocation() {

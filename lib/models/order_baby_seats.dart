@@ -255,17 +255,10 @@ class OrderBabySeats {
   int get babySeat2236 => _babySeat2236;
 
   void parseData(Map<String, dynamic> jsonData) {
-    if (jsonData == null) {
-      _babySeat0010 = 0;
-      _babySeat0918 = 0;
-      _babySeat1525 = 0;
-      _babySeat2236 = 0;
-    } else {
-      _babySeat0010 = MainUtils.parseInt(jsonData['0010']);
-      _babySeat0918 = MainUtils.parseInt(jsonData['0918']);
-      _babySeat1525 = MainUtils.parseInt(jsonData['1525']);
-      _babySeat2236 = MainUtils.parseInt(jsonData['2236']);
-    }
+    _babySeat0010 = MainUtils.parseInt(jsonData['0010']);
+    _babySeat0918 = MainUtils.parseInt(jsonData['0918']);
+    _babySeat1525 = MainUtils.parseInt(jsonData['1525']);
+    _babySeat2236 = MainUtils.parseInt(jsonData['2236']);
   }
 
   Map<String, dynamic> toJson() => {

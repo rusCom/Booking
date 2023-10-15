@@ -19,35 +19,6 @@ class RestService {
 
   int _curRestIndex = 1;
 
-  Future<dynamic> httpPost(String path, Map<String, dynamic> body) async {
-    DebugPrint().log(TAG, "httpPost", "path = $path");
-    var result;
-
-    http.Response? response;
-    String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
-    response = await _httpPostH(url, json.encode(body));
-    if (response == null) {
-      for (var host in GlobalConfigs().get("restHost")) {
-        if ((response == null) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
-          url = host + path;
-          response = await _httpPostH(url, json.encode(body));
-          if (response != null) {
-            _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
-          }
-        }
-      } // for (var host in AppSettings.restHost){
-    } // if (response == null){
-
-    if (response != null) {
-      if (response.statusCode == 200) {
-        result = json.decode(response.body);
-      }
-    }
-    DebugPrint().log(TAG, "httpPost", "result = $result");
-
-    return result;
-  }
-
   Future<Map<String, dynamic>> httpGet(path) async {
     late Map<String, dynamic> result;
 
@@ -77,23 +48,6 @@ class RestService {
     }
     DebugPrint().log(TAG, "httpGet", "result = $result");
     return result;
-  }
-
-  Future<http.Response?> _httpPostH(String url, String body) async {
-    http.Response? response;
-    try {
-      response = await http.post(Uri.parse(url), headers: {HttpHeaders.authorizationHeader: "Bearer ${_authHeader()}"}, body: body).timeout(
-        Duration(seconds: Preferences().systemHttpTimeOut),
-        onTimeout: () {
-          DebugPrint().log(TAG, "_httpPostH", "$url timeout");
-          return Future.value(null);
-        },
-      );
-    } catch (e) {
-      DebugPrint().log(TAG, "_httpPostH", "$url catch error = $e");
-    }
-
-    return response;
   }
 
   Future<http.Response?> _httpGetH(url) async {

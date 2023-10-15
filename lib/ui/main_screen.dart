@@ -3,7 +3,6 @@ import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/main_application.dart';
-import '../models/order.dart';
 import '../models/order_state.dart';
 import '../models/preferences.dart';
 import '../services/app_blocs.dart';
@@ -53,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
     });
 
     newOrderFirstPointScreen = NewOrderFirstPointScreen();
-    newOrderCalcScreen = NewOrderCalcScreen();
+    newOrderCalcScreen = const NewOrderCalcScreen();
   }
 
   @override
@@ -96,7 +95,7 @@ class _MainScreenState extends State<MainScreen> {
                     case OrderState.newOrderCalculated:
                       return newOrderCalcScreen;
                     default:
-                      return OrderSlidingPanel();
+                      return OrderSlidingPanel(curOrder: MainApplication().curOrder);
                   }
                 },
               ),
