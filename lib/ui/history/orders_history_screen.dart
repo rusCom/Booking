@@ -3,7 +3,7 @@ import 'package:progress_indicators/progress_indicators.dart';
 
 import '../../models/order.dart';
 import '../../models/preferences.dart';
-import '../../services/rest_service2.dart';
+import '../../services/rest_service.dart';
 
 class OrdersHistoryScreen extends StatefulWidget {
   const OrdersHistoryScreen({super.key});
@@ -22,7 +22,7 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
     super.initState();
     scrollController = ScrollController()..addListener(_scrollListener);
 
-    RestService2().httpGet("/orders/history").then((result) {
+    RestService().httpGet("/orders/history").then((result) {
       if (result['status'] == 'OK') {
         Iterable list = result['result'];
         List<Order> loadedOrders = list.map((model) => Order.fromJson(model)).toList();

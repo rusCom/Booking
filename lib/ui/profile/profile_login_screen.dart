@@ -73,7 +73,7 @@ class _ProfileLoginScreenState extends State<ProfileLoginScreen> with SingleTick
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.only(right: 40, bottom: 30),
-                            child: Container(
+                            child: SizedBox(
                               width: MediaQuery.of(context).size.width - 40,
                               child: Material(
                                 elevation: 10,
@@ -166,16 +166,20 @@ class _ProfileLoginScreenState extends State<ProfileLoginScreen> with SingleTick
   Future<void> _onLoginPressed() async {
     MainApplication().showProgress(context);
     String res = await Profile().login();
-    MainApplication().hideProgress(context);
+    if (context.mounted) MainApplication().hideProgress(context);
     if (res == 'OK') {
       setState(() {
         errorText = "Номер телефона";
         errorColor = const Color(0xFF999A9A);
       });
-      Navigator.pushReplacement(
-          context,
-          PageTransition(
-              type: PageTransitionType.fade, child: ProfileRegistrationScreen(background: widget.background), duration: const Duration(seconds: 2)));
+      if (context.mounted) {
+        Navigator.pushReplacement(
+            context,
+            PageTransition(
+                type: PageTransitionType.fade,
+                child: ProfileRegistrationScreen(background: widget.background),
+                duration: const Duration(seconds: 2)));
+      }
     } else {
       setState(() {
         errorText = res;

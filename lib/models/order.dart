@@ -4,7 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../services/app_blocs.dart';
 import '../services/map_markers_service.dart';
-import '../services/rest_service2.dart';
+import '../services/rest_service.dart';
 import '../ui/utils/core.dart';
 import 'agent.dart';
 import 'main_application.dart';
@@ -159,7 +159,7 @@ class Order {
   Future<void> calcOrder() async {
     DebugPrint().log(TAG, "calcOrder", toString());
     orderState = OrderState.newOrderCalculating;
-    var response = await RestService2().httpPost("/orders/calc", toJson());
+    var response = await RestService().httpPost("/orders/calc", toJson());
     if ((response["status"] == "OK") & (orderState == OrderState.newOrderCalculating)) {
       var result = response["result"];
       guid = result['guid'];
@@ -294,18 +294,18 @@ class Order {
   }
 
   note(String note) async {
-    Map<String, dynamic> restResult = await RestService2().httpGet("/orders/note?guid=$guid&note=${Uri.encodeFull(note)}");
+    Map<String, dynamic> restResult = await RestService().httpGet("/orders/note?guid=$guid&note=${Uri.encodeFull(note)}");
     MainApplication().parseData(restResult['result']);
     AppBlocs().orderStateController?.sink.add(_orderState);
   }
 
   deny(String reason) async {
-    Map<String, dynamic> restResult = await RestService2().httpGet("/orders/deny?guid=$guid&reason=${Uri.encodeFull(reason)}");
+    Map<String, dynamic> restResult = await RestService().httpGet("/orders/deny?guid=$guid&reason=${Uri.encodeFull(reason)}");
     MainApplication().parseData(restResult['result']);
   }
 
   addOrder() async {
-    Map<String, dynamic> restResult = await RestService2().httpPost("/orders/add", toJson());
+    Map<String, dynamic> restResult = await RestService().httpPost("/orders/add", toJson());
     MainApplication().parseData(restResult['result']);
   }
 

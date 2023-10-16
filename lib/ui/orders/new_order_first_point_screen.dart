@@ -1,4 +1,4 @@
-import 'package:booking/services/rest_service2.dart';
+import 'package:booking/services/rest_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -180,7 +180,7 @@ class NewOrderFirstPointScreen extends StatelessWidget {
   }
 
   void onCameraIdle() {
-    RestService2()
+    RestService()
         .httpGet("/orders/pickup?lt=${MapMarkersService().pickUpLocation.latitude}&ln=${MapMarkersService().pickUpLocation.longitude}")
         .then((response) {
       if (response['status'] == 'OK') {

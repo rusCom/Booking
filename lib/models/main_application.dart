@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../services/rest_service2.dart';
+import '../services/rest_service.dart';
 import '../ui/utils/core.dart';
 import 'order.dart';
 import 'order_state.dart';
@@ -41,6 +42,7 @@ class MainApplication {
   Map<String, dynamic> clientLinks = Map();
   List<RoutePoint> nearbyRoutePoint = [];
   String? pushToken;
+  PackageInfo? packageInfo;
 
   static AudioCache audioCache = AudioCache();
   static const audioAlarmOrderStateChange = "sounds/order_state_change.wav";
@@ -55,6 +57,8 @@ class MainApplication {
   Future<bool> init(BuildContext context) async {
     _sharedPreferences = await SharedPreferences.getInstance();
     deviceId = (await PlatformDeviceId.getDeviceId)!;
+
+    packageInfo = await PackageInfo.fromPlatform();
 
     // await GlobalConfiguration().loadFromAsset("app_settings");
     await GlobalConfigs().loadJsonFromdir('assets/cfg/app_settings.json');
@@ -217,7 +221,7 @@ class MainApplication {
   }
 
   _loadDataCycle() async {
-    Map<String, dynamic> restResult = await RestService2().httpGet("/data");
+    Map<String, dynamic> restResult = await RestService().httpGet("/data");
     if ((restResult['status'] == 'OK') & (restResult.containsKey("result"))) {
       parseData(restResult['result']);
     }

@@ -1,5 +1,7 @@
+import 'package:android_play_install_referrer/android_play_install_referrer.dart';
+import 'package:logger/logger.dart';
+
 import '../services/rest_service.dart';
-import '../services/rest_service2.dart';
 import '../ui/utils/core.dart';
 import 'main_application.dart';
 
@@ -12,6 +14,8 @@ class Profile {
   Profile._internal();
 
   String phone = "", code = "";
+  bool loadingReferrer = false;
+  String? installReferrer;
 
   void parseData(Map<String, dynamic> jsonData) {
     phone = jsonData['phone'] ?? "";
@@ -31,12 +35,12 @@ class Profile {
       url += "?push_token=${MainApplication().pushToken}";
     }
 
-    Map<String, dynamic> restResult = await RestService2().httpGet(url);
+    Map<String, dynamic> restResult = await RestService().httpGet(url);
     DebugPrint().log(TAG, "auth", restResult.toString());
     if (restResult['status'] == 'OK') {
       MainApplication().parseData(restResult['result']);
       if (restResult['result'].containsKey("profile")) {
-        Map<String, dynamic> restResultData = await RestService2().httpGet("/data");
+        Map<String, dynamic> restResultData = await RestService().httpGet("/data");
         MainApplication().parseData(restResultData['result']);
       }
     }
@@ -49,11 +53,17 @@ class Profile {
   }
 
   Future<String> login() async {
-    Map<String, dynamic> restResult = await RestService().httpGet("/profile/login?phone=$phone");
+    if (!loadingReferrer) {
+      ReferrerDetails referrerDetails = await AndroidPlayInstallReferrer.installReferrer;
+      installReferrer = referrerDetails.installReferrer;
+      installReferrer ??= "";
+      loadingReferrer = true;
+    }
+    Map<String, dynamic> restResult = await RestService().httpGet("/profile/login?phone=$phone&$installReferrer");
     if (restResult['status'] == 'OK') {
       return "OK";
     }
-    return restResult['error'];
+    return restResult['result'];
   }
 
   Future<String> registration() async {
@@ -63,6 +73,6 @@ class Profile {
       MainApplication().clientToken = restResult['result'];
       return "OK";
     }
-    return restResult['error'];
+    return restResult['result'];
   }
 }

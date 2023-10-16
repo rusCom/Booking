@@ -120,13 +120,13 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> w
                                 padding: const EdgeInsets.only(right: 50),
                                 child: Row(
                                   children: <Widget>[
-                                    Expanded(
+                                    const Expanded(
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 40),
+                                        padding: EdgeInsets.only(top: 40),
                                         child: Text(
-                                          'На номер телефона ' + Profile().phone + ' отправлен код подтверждения ...',
+                                          'Сейчас Вам поступит звонок. Необходимо прослушать и ввести код ...',
                                           textAlign: TextAlign.end,
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                             color: Color(0xFFA0A0A0),
                                             fontSize: 12,
                                           ),
@@ -198,7 +198,7 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> w
   Future<void> _onLoginPressed() async {
     MainApplication().showProgress(context);
     String res = await Profile().registration();
-    MainApplication().hideProgress(context);
+    if (context.mounted) MainApplication().hideProgress(context);
     if (res == 'OK') {
       setState(() {
         formVisible = false;

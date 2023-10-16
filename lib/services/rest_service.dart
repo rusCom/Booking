@@ -1,13 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:global_configs/global_configs.dart';
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
 
 import '../models/main_application.dart';
-import '../models/preferences.dart';
 import '../ui/utils/core.dart';
-
-import 'package:http/http.dart' as http;
 
 class RestService {
   final String TAG = (RestService).toString(); // ignore: non_constant_identifier_names
@@ -17,76 +17,141 @@ class RestService {
 
   RestService._internal();
 
-  int _curRestIndex = 1;
+  int _curRestIndex = 0;
 
-  Future<Map<String, dynamic>> httpGet(path) async {
+  Future<Map<String, dynamic>> httpPost(path, Map<String, dynamic> body) async {
     late Map<String, dynamic> result;
-
-    http.Response? response;
     String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
     DebugPrint().log(TAG, "httpGet", "path = $url");
-    response = await _httpGetH(url);
-    if (response == null) {
+    result = await httpPOST(url, body, auth: _authHeader());
+
+    if (!result.containsKey("server_status")) {
       for (var host in GlobalConfigs().get("restHost")) {
-        if ((response == null) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
+        if ((!result.containsKey("server_status")) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
           url = host + path;
-          response = await _httpGetH(url);
-          if (response != null) {
+          // DebugPrint().log(TAG, "httpGet", "path = $url");
+          result = await httpPOST(url, body, auth: _authHeader());
+          if (result.containsKey("server_status")) {
             _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
           }
         }
-      } // for (var host in AppSettings.restHost){
-    } // if (response == null){
-
-    if (response != null) {
-      if (response.statusCode == 200) {
-        result = json.decode(response.body);
-      }
-      if (response.statusCode == 401) {
-        result = json.decode(response.body);
       }
     }
+
     DebugPrint().log(TAG, "httpGet", "result = $result");
     return result;
   }
 
-  Future<http.Response?> _httpGetH(url) async {
-    http.Response? response;
+  Future<Map<String, dynamic>> httpGet(path) async {
+    late Map<String, dynamic> result;
+    String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
+    DebugPrint().log(TAG, "httpGet", "path = $url");
+    result = await httpGET(url, auth: _authHeader());
+
+    if (!result.containsKey("server_status")) {
+      for (var host in GlobalConfigs().get("restHost")) {
+        if ((!result.containsKey("server_status")) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
+          url = host + path;
+          // DebugPrint().log(TAG, "httpGet", "path = $url");
+          result = await httpGET(url, auth: _authHeader());
+          if (result.containsKey("server_status")) {
+            _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
+          }
+        }
+      }
+    }
+
+    DebugPrint().log(TAG, "httpGet", "result = $result");
+    return result;
+  }
+
+  static Future<Map<String, dynamic>> httpGET(url, {auth = "auth"}) async {
+    late Map<String, dynamic> result;
+    late http.Response response;
     try {
       response = await http.get(
         Uri.parse(url),
-        headers: {HttpHeaders.authorizationHeader: "Bearer ${_authHeader()}"},
+        headers: {HttpHeaders.authorizationHeader: "Bearer $auth"},
       ).timeout(
-        Duration(seconds: Preferences().systemHttpTimeOut),
+        const Duration(seconds: 5),
         onTimeout: () {
-          DebugPrint().log(TAG, "_httpGetH", "$url timeout");
-          return Future.value(null);
+          return http.Response("", 504);
         },
       );
-    } catch (e) {
-      DebugPrint().log(TAG, "_httpGetH", "catch error = $e");
+    } catch (error) {
+      result = <String, dynamic>{};
+      result['status'] = "Service Unavailable";
+      result['status_code'] = "503";
+      result['error'] = error.toString();
+      return result;
     }
 
-    return response;
+    if (response.statusCode == 200) {
+      try {
+        result = json.decode(response.body);
+        result["server_status"] = 'OK';
+      } catch (error) {
+        result = <String, dynamic>{};
+        result['status'] = error.toString();
+      }
+    } else {
+      result = <String, dynamic>{};
+      result['status'] = "error";
+    }
+
+    return result;
   }
 
-  String _authHeader() {
+  static Future<Map<String, dynamic>> httpPOST(url, Map<String, dynamic> body, {auth = "auth"}) async {
+    late Map<String, dynamic> result;
+    late http.Response response;
+    try {
+      response =
+          await http.post(Uri.parse(url), headers: {HttpHeaders.authorizationHeader: "Bearer $auth"}, body: jsonEncode(body).toString()).timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          return http.Response("", 504);
+        },
+      );
+    } catch (error) {
+      result = <String, dynamic>{};
+      result['status'] = "Service Unavailable";
+      result['status_code'] = "503";
+      result['error'] = error.toString();
+      return result;
+    }
+
+    if (response.statusCode == 200) {
+      try {
+        result = json.decode(response.body);
+        result["server_status"] = 'OK';
+      } catch (error) {
+        result = <String, dynamic>{};
+        result['status'] = error.toString();
+      }
+    } else {
+      result = <String, dynamic>{};
+      result['status'] = "error";
+    }
+
+    return result;
+  }
+
+  static String _authHeader() {
     var header = {
       "deviceId": MainApplication().deviceId,
       "dispatching": GlobalConfigs().get("dispatchingToken"),
-      "lt": MainApplication().currentPosition?.latitude,
-      "ln": MainApplication().currentPosition?.longitude,
       "location": MainApplication().currentPosition?.toJson(),
       "platform": "android",
       "token": MainApplication().clientToken,
+      "package_name": MainApplication().packageInfo?.packageName,
       "test": GlobalConfigs().get("isTest"),
     };
 
-    DebugPrint().log(TAG, "_authHeader", header);
+    // DebugPrint().log(TAG, "auth", header);
 
     var bytes = utf8.encode(header.toString());
     var res = base64.encode(bytes);
-    DebugPrint().log(TAG, "_authHeader", res);
     return res;
   }
 }
