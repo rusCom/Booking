@@ -40,30 +40,32 @@ class OrderSlidingPanelBottom extends StatelessWidget {
                 ),
               )
             : Container(),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              FloatingActionButton(
-                backgroundColor: Colors.white,
-                onPressed: () {
-                  MainApplication().launchURL("tel://${curOrder.dispatcherPhone}");
-                },
-                heroTag: "_dispathcerCall",
-                child: const Icon(
-                  Icons.call,
-                  color: Colors.lightGreen,
+        curOrder.canDispathcerCall
+            ? Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    FloatingActionButton(
+                      backgroundColor: Colors.white,
+                      onPressed: () {
+                        MainApplication().launchURL("tel://${curOrder.dispatcherPhone}");
+                      },
+                      heroTag: "_dispathcerCall",
+                      child: const Icon(
+                        Icons.call,
+                        color: Colors.lightGreen,
+                      ),
+                    ),
+                    const Center(
+                      child: Text('Позвонить'),
+                    ),
+                    const Center(
+                      child: Text('диспетчеру'),
+                    ),
+                  ],
                 ),
-              ),
-              const Center(
-                child: Text('Позвонить'),
-              ),
-              const Center(
-                child: Text('диспетчеру'),
-              ),
-            ],
-          ),
-        ),
+              )
+            : Container(),
         curOrder.agent != null
             ? Padding(
                 padding: const EdgeInsets.all(8.0),

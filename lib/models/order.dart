@@ -278,6 +278,12 @@ class Order {
     return false;
   }
 
+  bool get canDispathcerCall {
+    if (dispatcherPhone == null) return false;
+    if (dispatcherPhone == "") return false;
+    return true;
+  }
+
   bool get mapBoundsIcon {
     switch (orderState) {
       case OrderState.driveToClient:

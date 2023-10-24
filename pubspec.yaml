@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.16+16
+version: 0.0.17+17
 
 environment:
   # sdk: '>=2.19.6 <3.0.0'
@@ -59,8 +59,8 @@ dependencies:
   appmetrica_plugin: ^1.4.0
   # audioplayers: ^0.20.1 # Не обновлять на более поздную версию
   audioplayers: ^5.2.0
-  firebase_core: ^2.17.0
-  firebase_messaging: ^14.6.9
+  firebase_core: ^2.19.0
+  firebase_messaging: ^14.7.1
   uuid: ^3.0.7
   android_play_install_referrer: ^0.3.0
   package_info_plus: ^4.2.0
