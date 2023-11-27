@@ -10,20 +10,20 @@ class MainBackground extends StatelessWidget {
 
   Widget topHalf(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
-    return new Flexible(
+    return Flexible(
       flex: 2,
       child: ClipPath(
-        clipper: new ArcClipper(),
+        clipper: ArcClipper(),
         child: Stack(
           children: <Widget>[
-            new Container(
-              decoration: new BoxDecoration(
-                  gradient: new LinearGradient(
+            Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
                 colors: Const.kitGradients,
               )),
             ),
             showLogo
-                ? new Center(
+                ? Center(
                     child: SizedBox(
                         height: deviceSize.height / 6,
                         width: deviceSize.width / 2,
@@ -33,21 +33,21 @@ class MainBackground extends StatelessWidget {
                           height: deviceSize.height / 6,
                         )),
                   )
-                : new Container()
+                : Container()
           ],
         ),
       ),
     );
   }
 
-  final bottomHalf = new Flexible(
+  final bottomHalf = Flexible(
     flex: 3,
-    child: new Container(),
+    child: Container(),
   );
 
   @override
   Widget build(BuildContext context) {
-    return new Column(
+    return Column(
       children: <Widget>[topHalf(context), bottomHalf],
     );
   }

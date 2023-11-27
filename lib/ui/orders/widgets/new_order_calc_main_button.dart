@@ -1,8 +1,8 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 
 import '../../../models/main_application.dart';
 import '../../../models/order_state.dart';
-import '../../../models/preferences.dart';
 import '../../../services/app_blocs.dart';
 import '../bottom_sheets/order_modal_bottom_sheets.dart';
 
@@ -16,7 +16,7 @@ class NewOrderMainButton extends StatelessWidget {
       return "Запланировать поездку\n${MainApplication().curOrder.orderWishes.workDateCaption}";
     }
 
-    return "Заказать такси";
+    return "Заказать";
   }
 
   @override
@@ -38,8 +38,6 @@ class NewOrderMainButton extends StatelessWidget {
                       bottomLeft: Radius.circular(18),
                     ),
                   ),
-                  backgroundColor: Preferences().mainColor,
-                  disabledBackgroundColor: Colors.grey,
                   padding: const EdgeInsets.all(8.0),
                 ),
                 child: StreamBuilder<OrderState>(
@@ -56,17 +54,19 @@ class NewOrderMainButton extends StatelessWidget {
           SizedBox(
             height: 60,
             width: 60,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(18)),
+            child: InkWell(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(bottomRight: Radius.circular(18)),
+                  border: Border.all(color: mainColor, width: 2),
+                  color: mainColor,
                 ),
-                backgroundColor: Preferences().mainColor,
-                disabledBackgroundColor: Colors.grey,
+                child: const Icon(
+                  Icons.date_range,
+                  color: Colors.white,
+                ),
               ),
-              icon: const Icon(Icons.date_range),
-              label: const Text(""),
-              onPressed: () => onDateButtonPressed(context),
+              onTap: () => onDateButtonPressed(context),
             ),
           )
         ],

@@ -66,6 +66,64 @@
     },
     {
       "client_info": {
+        "mobilesdk_app_id": "1:735359304642:android:1ae8bc525bae860b38cc5b",
+        "android_client_info": {
+          "package_name": "ru.ataxi24.booking.kigi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735359304642-jvpg25jauq721ohhj8kneqb25f5tjpm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_8qz9omHPEEpWFSDlfEA57ef0EkYLGcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735359304642-jvpg25jauq721ohhj8kneqb25f5tjpm2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735359304642:android:79dd557510320a3138cc5b",
+        "android_client_info": {
+          "package_name": "ru.ataxi24.booking.mesyagutovo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735359304642-jvpg25jauq721ohhj8kneqb25f5tjpm2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_8qz9omHPEEpWFSDlfEA57ef0EkYLGcA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735359304642-jvpg25jauq721ohhj8kneqb25f5tjpm2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:735359304642:android:bcd295ad96ae11f738cc5b",
         "android_client_info": {
           "package_name": "ru.ataxi24.booking.minimal"

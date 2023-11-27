@@ -1,3 +1,4 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -107,16 +108,16 @@ class _OrderWishesDriverNoteState extends State<OrderWishesDriverNote> {
                   ),
                   splashColor: Colors.yellow[200],
                   textColor: Colors.white,
-                  color: Preferences().mainColor,
+                  color: mainColor,
                   disabledColor: Colors.grey,
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
+                  child: const Text(
                     "Готово",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
             ],

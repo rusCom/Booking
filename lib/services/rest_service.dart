@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:global_configs/global_configs.dart';
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 
 import '../models/main_application.dart';
 import '../ui/utils/core.dart';
@@ -65,7 +64,7 @@ class RestService {
     return result;
   }
 
-  static Future<Map<String, dynamic>> httpGET(url, {auth = "auth"}) async {
+  Future<Map<String, dynamic>> httpGET(url, {auth = "auth"}) async {
     late Map<String, dynamic> result;
     late http.Response response;
     try {
@@ -102,7 +101,7 @@ class RestService {
     return result;
   }
 
-  static Future<Map<String, dynamic>> httpPOST(url, Map<String, dynamic> body, {auth = "auth"}) async {
+  Future<Map<String, dynamic>> httpPOST(url, Map<String, dynamic> body, {auth = "auth"}) async {
     late Map<String, dynamic> result;
     late http.Response response;
     try {

@@ -1,6 +1,6 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/preferences.dart';
 import '../../models/route_point.dart';
 import '../../services/app_blocs.dart';
 import '../../services/geo_service.dart';
@@ -43,7 +43,7 @@ class RoutePointAddressScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: routePointSearchBar,
-        backgroundColor: Preferences().mainColor,
+        backgroundColor: mainColor,
       ),
       body: SingleChildScrollView(
         physics: const ScrollPhysics(),
@@ -71,8 +71,8 @@ class RoutePointAddressScreen extends StatelessWidget {
               stream: AppBlocs().geoAutocompleteAddressStream,
               builder: (context, snapshot) {
                 if (snapshot.data == "searching_") {
-                  return Center(
-                    child: CircularProgressIndicator(backgroundColor: Preferences().mainColor),
+                  return const Center(
+                    child: CircularProgressIndicator(backgroundColor: mainColor),
                   );
                 }
                 if (snapshot.data == "not_found_") {

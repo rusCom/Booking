@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:logger/logger.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../models/main_application.dart';
 import '../../models/profile.dart';
-import '../../services/geo_service.dart';
 import '../../services/map_markers_service.dart';
 import '../main_screen.dart';
 import '../profile/profile_login_screen.dart';

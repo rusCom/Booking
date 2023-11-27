@@ -83,8 +83,8 @@ class CirclePink extends StatelessWidget {
       offset: const Offset(-70.0, 90.0),
       child: const Material(
         color: Colors.pink,
-        child: Padding(padding: EdgeInsets.all(120)),
         shape: CircleBorder(side: BorderSide(color: Colors.white, width: 15.0)),
+        child: Padding(padding: EdgeInsets.all(120)),
       ),
     );
   }
@@ -99,8 +99,8 @@ class CircleYellow extends StatelessWidget {
       offset: const Offset(0.0, 210.0),
       child: const Material(
         color: Colors.yellow,
-        child: Padding(padding: EdgeInsets.all(140)),
         shape: CircleBorder(side: BorderSide(color: Colors.white, width: 15.0)),
+        child: Padding(padding: EdgeInsets.all(140)),
       ),
     );
   }

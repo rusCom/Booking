@@ -1,9 +1,9 @@
+import 'package:booking/constants/style.dart';
 import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart' hide ReorderableList;
 import 'package:flutter_reorderable_list/flutter_reorderable_list.dart';
 
 import '../../../models/main_application.dart';
-import '../../../models/preferences.dart';
 import '../../../models/route_point.dart';
 import '../../../services/app_blocs.dart';
 import '../../route_point/route_point_screen.dart';
@@ -45,7 +45,7 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
             },
           ),
           title: const Text("Корректировка маршрута", style: TextStyle(color: Colors.black)),
-          backgroundColor: Preferences().mainColor,
+          backgroundColor: mainColor,
         ),
         body: ReorderableList(
           onReorder: _reorderCallback,
@@ -77,7 +77,7 @@ class _NewOrderRoutePointsReorderDialogState extends State<NewOrderRoutePointsRe
                                       },
                                     ),
                                   ),
-                                  SizedBox(height: 40, child: VerticalDivider(color: Preferences().mainColor)),
+                                  const SizedBox(height: 40, child: VerticalDivider(color: mainColor)),
                                   Expanded(
                                     child: TextButton.icon(
                                       icon: const Icon(Icons.cached, color: Colors.black),

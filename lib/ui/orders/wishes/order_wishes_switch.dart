@@ -1,7 +1,7 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../models/preferences.dart';
 import '../../utils/core.dart';
 
 typedef OrderWishesSwitchChangeCallback = void Function(bool value);
@@ -52,7 +52,7 @@ class _OrderWishesSwitchState extends State<OrderWishesSwitch> {
   Widget _switch() {
     return Switch(
         value: orderWishesValue,
-        activeColor: Preferences().mainColor,
+        activeColor: mainColor,
         onChanged: (value) => setState(() {
               orderWishesValue = value;
               widget.onChanged(value);

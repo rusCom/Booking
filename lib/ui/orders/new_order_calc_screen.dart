@@ -1,3 +1,4 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -143,7 +144,7 @@ class NewOrderCalcScreen extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
                   ),
                   Divider(
-                    color: Preferences().mainColor,
+                    color: mainColor,
                     indent: 15,
                     endIndent: 15,
                   ),
@@ -172,7 +173,7 @@ class NewOrderCalcScreen extends StatelessWidget {
                           },
                         ),
                       ),
-                      SizedBox(height: 40, child: VerticalDivider(color: Preferences().mainColor)),
+                      const SizedBox(height: 40, child: VerticalDivider(color: mainColor)),
                       Expanded(
                         child: TextButton.icon(
                           icon: StreamBuilder(
@@ -233,7 +234,7 @@ class NewOrderCalcScreen extends StatelessWidget {
     }
     return ClipOval(
       child: Container(
-        color: Preferences().mainColor,
+        color: mainColor,
         height: 24,
         width: 24,
         child: Center(

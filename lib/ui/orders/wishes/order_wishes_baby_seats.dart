@@ -1,3 +1,4 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -84,7 +85,7 @@ class _OrderWishesBabySeatsState extends State<OrderWishesBabySeats> {
                       initialValue: orderBabySeats.babySeat0010,
                       minValue: 0,
                       maxValue: Preferences().wishesBabySeatsCount,
-                      color: Preferences().mainColor,
+                      color: mainColor,
                       onChanged: (value) => stateSetter(() => orderBabySeats.babySeat0010 = value),
                     ),
                   ),
@@ -95,7 +96,7 @@ class _OrderWishesBabySeatsState extends State<OrderWishesBabySeats> {
                       initialValue: orderBabySeats.babySeat0918,
                       minValue: 0,
                       maxValue: Preferences().wishesBabySeatsCount,
-                      color: Preferences().mainColor,
+                      color: mainColor,
                       onChanged: (value) => stateSetter(() => orderBabySeats.babySeat0918 = value),
                     ),
                   ),
@@ -106,7 +107,7 @@ class _OrderWishesBabySeatsState extends State<OrderWishesBabySeats> {
                       initialValue: orderBabySeats.babySeat1525,
                       minValue: 0,
                       maxValue: Preferences().wishesBabySeatsCount,
-                      color: Preferences().mainColor,
+                      color: mainColor,
                       onChanged: (value) => stateSetter(() => orderBabySeats.babySeat1525 = value),
                     ),
                   ),
@@ -117,7 +118,7 @@ class _OrderWishesBabySeatsState extends State<OrderWishesBabySeats> {
                       initialValue: orderBabySeats.babySeat2236,
                       minValue: 0,
                       maxValue: Preferences().wishesBabySeatsCount,
-                      color: Preferences().mainColor,
+                      color: mainColor,
                       onChanged: (value) => stateSetter(() => orderBabySeats.babySeat2236 = value),
                     ),
                   ),

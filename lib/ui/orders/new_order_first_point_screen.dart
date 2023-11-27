@@ -1,9 +1,9 @@
+import 'package:booking/constants/style.dart';
 import 'package:booking/services/rest_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../models/main_application.dart';
-import '../../models/preferences.dart';
 import '../../models/route_point.dart';
 import '../../services/app_blocs.dart';
 import '../../services/map_markers_service.dart';
@@ -115,7 +115,7 @@ class NewOrderFirstPointScreen extends StatelessWidget {
                       ),
                       splashColor: Colors.yellow[200],
                       textColor: Colors.white,
-                      color: Preferences().mainColor,
+                      color: mainColor,
                       disabledColor: Colors.grey,
                       padding: const EdgeInsets.all(8.0),
                       child: Row(

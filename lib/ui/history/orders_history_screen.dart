@@ -1,8 +1,8 @@
+import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
 
 import '../../models/order.dart';
-import '../../models/preferences.dart';
 import '../../services/rest_service.dart';
 
 class OrdersHistoryScreen extends StatefulWidget {
@@ -58,7 +58,7 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
       body: loading
           ? Center(
               child: CircularProgressIndicator(
-                backgroundColor: Preferences().mainColor,
+                backgroundColor: mainColor,
               ),
             )
           : hasData

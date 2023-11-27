@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 import '../ui/utils/core.dart';
 import 'order_tariff.dart';
 import 'payment_type.dart';
@@ -24,8 +22,6 @@ class Preferences {
   int systemHttpTimeOut = 10;
   int systemTimerTask = 5;
   int wishesBabySeatsCount = 1;
-  Color mainColor = Colors.amber;
-  int mainColorCode = 0xFFFFC107;
 
   void parseData(Map<String, dynamic> jsonData) {
     DebugPrint().log(TAG, "parseData", jsonData);
@@ -38,8 +34,6 @@ class Preferences {
       mapDirections = MainUtils.parseBool(jsonData['system']['map_directions']);
       systemHttpTimeOut = MainUtils.parseInt(jsonData['system']['http_timeout'], def: 20);
       systemTimerTask = MainUtils.parseInt(jsonData['system']['timer_task'], def: 5);
-      mainColorCode = MainUtils.parseInt(jsonData['system']['main_color'], def: 0xFFFFC107);
-      mainColor = Color(mainColorCode);
     }
 
     if (jsonData.containsKey('payments')) {

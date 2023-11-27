@@ -1,11 +1,10 @@
+import 'package:booking/constants/style.dart';
 import 'package:booking/ui/route_point/route_point_address_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
 import '../../models/main_application.dart';
-import '../../models/order.dart';
 import '../../models/order_state.dart';
-import '../../models/preferences.dart';
 import '../../models/route_point.dart';
 import '../../services/app_blocs.dart';
 import '../../services/geo_service.dart';
@@ -39,7 +38,7 @@ class RoutePointScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         title: routePointSearchBar,
-        backgroundColor: Preferences().mainColor,
+        backgroundColor: mainColor,
       ),
       body: _bodyRoutePointScreen(
         context,
@@ -92,9 +91,9 @@ class RoutePointScreen extends StatelessWidget {
           );
         }
         if (snapshot.data == "searching_") {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(
-              backgroundColor: Preferences().mainColor,
+              backgroundColor: mainColor,
             ),
           );
         }
