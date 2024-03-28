@@ -1,5 +1,5 @@
+import 'package:booking/data/main_application.dart';
 import 'package:flutter/material.dart';
-import '../../../models/main_application.dart';
 import 'new_order_calc_tariff_widget.dart';
 
 class NewOrderCalcTariffCheckWidget extends StatelessWidget {

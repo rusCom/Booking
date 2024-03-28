@@ -1,8 +1,7 @@
 import 'package:android_play_install_referrer/android_play_install_referrer.dart';
-import 'package:logger/logger.dart';
+import 'package:booking/services/debug_print.dart';
 
 import '../services/rest_service.dart';
-import '../ui/utils/core.dart';
 import 'main_application.dart';
 
 class Profile {
@@ -37,6 +36,7 @@ class Profile {
 
     Map<String, dynamic> restResult = await RestService().httpGet(url);
     DebugPrint().log(TAG, "auth", restResult.toString());
+
     if (restResult['status'] == 'OK') {
       MainApplication().parseData(restResult['result']);
       if (restResult['result'].containsKey("profile")) {
@@ -44,9 +44,9 @@ class Profile {
         MainApplication().parseData(restResultData['result']);
       }
     }
-    if (restResult['status'] == 'UNAUTHORIZED') {
-      if (restResult.containsKey('error')) {
-        MainApplication().parseData(restResult['error']);
+    if (restResult['status'] == 'Unauthorized') {
+      if (restResult.containsKey('result')) {
+        MainApplication().parseData(restResult['result']);
       }
     }
     return restResult['status'];

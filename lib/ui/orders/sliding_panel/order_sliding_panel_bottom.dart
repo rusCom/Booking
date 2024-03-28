@@ -1,8 +1,8 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order.dart';
 import 'package:flutter/material.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-import '../../../models/main_application.dart';
-import '../../../models/order.dart';
 
 class OrderSlidingPanelBottom extends StatelessWidget {
   final Order curOrder;
@@ -40,7 +40,7 @@ class OrderSlidingPanelBottom extends StatelessWidget {
                 ),
               )
             : Container(),
-        curOrder.canDispathcerCall
+        MainApplication().preferences.canDispatcherCall
             ? Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -48,7 +48,7 @@ class OrderSlidingPanelBottom extends StatelessWidget {
                     FloatingActionButton(
                       backgroundColor: Colors.white,
                       onPressed: () {
-                        MainApplication().launchURL("tel://${curOrder.dispatcherPhone}");
+                        MainApplication().launchURL("tel://${MainApplication().preferences.dispatcherPhone}");
                       },
                       heroTag: "_dispathcerCall",
                       child: const Icon(

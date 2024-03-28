@@ -1,13 +1,13 @@
 import 'dart:convert';
 
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/profile.dart';
+import 'package:booking/data/route_point.dart';
 import 'package:booking/services/map_markers_service.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/main_application.dart';
-import '../models/profile.dart';
-import '../models/route_point.dart';
-import '../ui/utils/core.dart';
+import 'debug_print.dart';
 
 class GeoService {
   final String TAG = (GeoService).toString(); // ignore: non_constant_identifier_names
@@ -18,7 +18,7 @@ class GeoService {
   GeoService._internal();
 
   Future<List<String>?> directions(String body) async {
-    String url = "http://api.ataxi24.ru:7580/geo/directions?"
+    String url = "https://api.ataxi24.ru:7543/geo/directions?"
         "&google_key=${MainApplication().preferences.googleKey}&token=${GlobalConfigs().get("geoToken")}";
     DebugPrint().log(TAG, "directions", url);
     DebugPrint().log(TAG, "directions", body);
@@ -35,7 +35,7 @@ class GeoService {
 
   Future<List<RoutePoint>?> autocompleteAddress(RoutePoint route, String number, String splash) async {
     if (number.isEmpty) return null;
-    String url = "http://api.ataxi24.ru:7580/geo/autocomplete/address?route=${route.placeId}&number=$number&splash=$splash"
+    String url = "https://api.ataxi24.ru:7543/geo/autocomplete/address?route=${route.placeId}&number=$number&splash=$splash"
         "&google_key=${MainApplication().preferences.googleKey}&token=${GlobalConfigs().get("geoToken")}";
     DebugPrint().log(TAG, "autocompleteAddress", url);
     http.Response? response = await http.get(Uri.parse(url));
@@ -56,7 +56,7 @@ class GeoService {
     if (input.isEmpty) return null;
     if (input == "") return null;
     String url =
-        "http://api.ataxi24.ru:7580/geo/autocomplete?keyword=${Uri.encodeFull(input)}&location=${MapMarkersService().pickUpRoutePoint.lt},${MapMarkersService().pickUpRoutePoint.ln}"
+        "https://api.ataxi24.ru:7543/geo/autocomplete?keyword=${Uri.encodeFull(input)}&location=${MapMarkersService().pickUpRoutePoint.lt},${MapMarkersService().pickUpRoutePoint.ln}"
         "&google_key=${MainApplication().preferences.googleKey}&token=${GlobalConfigs().get("geoToken")}";
     DebugPrint().log(TAG, "autocomplete", url);
     http.Response response = await http.get(Uri.parse(url));
@@ -73,7 +73,7 @@ class GeoService {
   }
 
   Future<RoutePoint> detail(RoutePoint routePoint) async {
-    String url = "http://api.ataxi24.ru:7580/geo/detail?place_id=${routePoint.placeId}"
+    String url = "https://api.ataxi24.ru:7543/geo/detail?place_id=${routePoint.placeId}"
         "&google_key=${MainApplication().preferences.googleKey}&token=${GlobalConfigs().get("geoToken")}";
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode != 200) return routePoint;

@@ -1,12 +1,12 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
+import 'package:booking/data/preferences.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/map_markers_service.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../models/main_application.dart';
-import '../models/order_state.dart';
-import '../models/preferences.dart';
-import '../services/app_blocs.dart';
-import '../services/map_markers_service.dart';
 import 'drawer/app_drawer.dart';
 import 'orders/new_order_calc_screen.dart';
 import 'orders/new_order_first_point_screen.dart';
@@ -23,9 +23,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late GoogleMapController _mapController;
+  late Set<Marker> _markers;
   var scaffoldKey = GlobalKey<ScaffoldState>();
   MapType _currentMapType = MapType.normal;
-  late Set<Marker> _markers;
+
   Map<PolylineId, Polyline> _polylines = {};
   late NewOrderFirstPointScreen newOrderFirstPointScreen;
   late NewOrderCalcScreen newOrderCalcScreen;
@@ -62,7 +63,7 @@ class _MainScreenState extends State<MainScreen> {
       child: Scaffold(
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: GlobalConfigs().get("tmp_drawer") ? AppDrawer() : Container(),
+        drawer: GlobalConfigs().get("tmp_drawer") ? const AppDrawer() : Container(),
         drawerEnableOpenDragGesture: false,
         body: Stack(
           children: <Widget>[

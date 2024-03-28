@@ -1,9 +1,8 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/order.dart';
+import 'package:booking/services/rest_service.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
-
-import '../../models/order.dart';
-import '../../services/rest_service.dart';
 
 class OrdersHistoryScreen extends StatefulWidget {
   const OrdersHistoryScreen({super.key});
@@ -49,14 +48,14 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back, color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text("История моих поездок"),
+        title: const Text("История моих поездок"),
       ),
       body: loading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(
                 backgroundColor: mainColor,
               ),
@@ -78,7 +77,7 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
                     },
                   ),
                 )
-              : Center(
+              : const Center(
                   child: Text("К сожалению, Вы у нас еще ничего не заказывали."),
                 ),
     );
@@ -91,9 +90,9 @@ class _OrdersHistoryScreenState extends State<OrdersHistoryScreen> {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 200,
-              child: Text(order.price),
+              child: Text(order.cost.toString()),
             ),
           ],
         ),

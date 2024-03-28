@@ -1,11 +1,11 @@
+import 'package:booking/data/order.dart';
+import 'package:booking/data/route_point.dart';
+import 'package:booking/ui/orders/bottom_sheets/order_modal_bottom_sheets.dart';
+import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-import '../../../models/order.dart';
-import '../../../models/route_point.dart';
-import '../../utils/core.dart';
-import '../bottom_sheets/order_modal_bottom_sheets.dart';
 import 'order_sliding_panel_bottom.dart';
 import 'order_sliding_panel_caption.dart';
 import 'order_sliding_panel_wishes_tile.dart';
@@ -42,7 +42,7 @@ class OrderSlidingPanel extends StatelessWidget {
                     ),
                     title: const Text("Стоимость поездки"),
                     subtitle: Text(curOrder.paymentType()!.choseName),
-                    trailing: Text("${curOrder.price} \u20BD"),
+                    trailing: Text("${curOrder.cost} \u20BD"),
                   ),
                   MediaQuery.removePadding(
                     context: context,

@@ -1,11 +1,12 @@
-import 'package:booking/models/preferences.dart';
+import 'package:booking/data/preferences.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/debug_print.dart';
+import 'package:booking/services/map_markers_service.dart';
+import 'package:booking/services/rest_service.dart';
+import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../services/app_blocs.dart';
-import '../services/map_markers_service.dart';
-import '../services/rest_service.dart';
-import '../ui/utils/core.dart';
 import 'agent.dart';
 import 'main_application.dart';
 import 'order_state.dart';
@@ -20,12 +21,11 @@ class Order {
   String guid = "";
   List<RoutePoint> routePoints = [];
   String _lastRoutePoints = "";
-  String dispatcherPhone = "";
   Agent? agent; // водитель
   bool canDeny = false;
   int distance = 0;
 
-  String price = "";
+  int? cost;
   OrderWishes orderWishes = OrderWishes();
   List<PaymentType> paymentTypes = [];
   List<OrderTariff> orderTariffs = [];
@@ -210,8 +210,7 @@ class Order {
   void parseData(Map<String, dynamic> jsonData, {bool isAnimateCamera = true}) {
     DebugPrint().log(TAG, "parseData", jsonData.toString());
     guid = jsonData['guid'];
-    dispatcherPhone = jsonData['dispatcher_phone'] ?? "";
-    price = jsonData['price'].toString();
+    cost = jsonData['price'];
     selectedPaymentType = jsonData['payment'] ?? "";
     if (jsonData['wishes'] != null) {
       orderWishes.parseData(jsonData['wishes']);
@@ -271,17 +270,11 @@ class Order {
         MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
         return true;
       } catch (error) {
-        // TODO: handle exception, for example by showing an alert to the user
+        // TODO: handle exception, for ataxi24 by showing an alert to the user
         return false;
       }
     }
     return false;
-  }
-
-  bool get canDispathcerCall {
-    if (dispatcherPhone == null) return false;
-    if (dispatcherPhone == "") return false;
-    return true;
   }
 
   bool get mapBoundsIcon {

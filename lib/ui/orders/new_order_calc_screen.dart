@@ -1,16 +1,16 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
+import 'package:booking/data/preferences.dart';
+import 'package:booking/data/route_point.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/map_markers_service.dart';
+import 'package:booking/ui/route_point/route_point_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-import '../../models/main_application.dart';
-import '../../models/order_state.dart';
-import '../../models/preferences.dart';
-import '../../models/route_point.dart';
-import '../../services/app_blocs.dart';
-import '../../services/map_markers_service.dart';
-import '../route_point/route_point_screen.dart';
 import 'bottom_sheets/order_modal_bottom_sheets.dart';
 import 'widgets/new_order_calc_main_button.dart';
 import 'widgets/new_order_calc_tariff_check_widget.dart';
@@ -120,7 +120,7 @@ class NewOrderCalcScreen extends StatelessWidget {
                               MainApplication().curOrder.addRoutePoint(routePoint);
                             }
                           } else {
-                            await Navigator.push(context, MaterialPageRoute(builder: (context) => NewOrderRoutePointsReorderDialog()));
+                            await Navigator.push(context, MaterialPageRoute(builder: (context) => const NewOrderRoutePointsReorderDialog()));
                             MainApplication().curOrder.calcOrder();
                           }
                         }
@@ -136,14 +136,14 @@ class NewOrderCalcScreen extends StatelessWidget {
                             MainApplication().curOrder.addRoutePoint(routePoint, isLast: true);
                           }
                         } else {
-                          await Navigator.push(context, MaterialPageRoute(builder: (context) => NewOrderRoutePointsReorderDialog()));
+                          await Navigator.push(context, MaterialPageRoute(builder: (context) => const NewOrderRoutePointsReorderDialog()));
                           MainApplication().curOrder.calcOrder();
                         }
                       }
                     },
                     contentPadding: const EdgeInsets.symmetric(horizontal: 8.0),
                   ),
-                  Divider(
+                  const Divider(
                     color: mainColor,
                     indent: 15,
                     endIndent: 15,

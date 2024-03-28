@@ -2,17 +2,16 @@ import 'package:booking/constants/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../models/preferences.dart';
 import '../../utils/core.dart';
 import 'order_wishes_title.dart';
 
-typedef void OrderWishesDriverNoteChangeCallback(String value);
+typedef OrderWishesDriverNoteChangeCallback = void Function(String value);
 
 class OrderWishesDriverNote extends StatefulWidget {
   final String value;
   final OrderWishesDriverNoteChangeCallback onChanged;
 
-  const OrderWishesDriverNote({Key? key, required this.value, required this.onChanged}) : super(key: key);
+  const OrderWishesDriverNote({super.key, required this.value, required this.onChanged});
 
   @override
   _OrderWishesDriverNoteState createState() => _OrderWishesDriverNoteState();
@@ -30,15 +29,13 @@ class _OrderWishesDriverNoteState extends State<OrderWishesDriverNote> {
         height: Const.modalBottomSheetsLeadingSize,
         width: Const.modalBottomSheetsLeadingSize,
       ),
-      title: value == "" ? Text("Комментарий водителю") : Text(value),
-      subtitle: value == "" ? null : Text("Комментарий водителю"),
+      title: value == "" ? const Text("Комментарий водителю") : Text(value),
+      subtitle: value == "" ? null : const Text("Комментарий водителю"),
       onTap: () async {
         String newValue = await orderWishesDriverNote(context, value);
         setState(() {
-          if (widget.onChanged != null) {
-            widget.onChanged(newValue);
-          }
-          value = newValue;
+          widget.onChanged(newValue);
+                  value = newValue;
         });
       },
       trailing: IconButton(
@@ -47,17 +44,13 @@ class _OrderWishesDriverNoteState extends State<OrderWishesDriverNote> {
           if (value == "") {
             String newValue = await orderWishesDriverNote(context, value);
             setState(() {
-              if (widget.onChanged != null) {
-                widget.onChanged(newValue);
-              }
-              value = newValue;
+              widget.onChanged(newValue);
+                          value = newValue;
             });
           } else {
             setState(() {
-              if (widget.onChanged != null) {
-                widget.onChanged("");
-              }
-              value = "";
+              widget.onChanged("");
+                          value = "";
             });
           }
         },
@@ -80,7 +73,7 @@ class _OrderWishesDriverNoteState extends State<OrderWishesDriverNote> {
             shrinkWrap: true,
             children: <Widget>[
               // bottomSheetTitle(context, "Комментарий водителю"),
-              OrderWishesTitle("Комментарий водителю"),
+              const OrderWishesTitle("Комментарий водителю"),
               TextField(
                 autofocus: true,
                 textInputAction: TextInputAction.go,
@@ -95,7 +88,7 @@ class _OrderWishesDriverNoteState extends State<OrderWishesDriverNote> {
                     "assets/icons/ic_wishes_driver_note.svg",
                     height: Const.modalBottomSheetsLeadingSize,
                     width: Const.modalBottomSheetsLeadingSize,
-                    color: Color(0xFF757575),
+                    color: const Color(0xFF757575),
                   ),
                 ),
               ),

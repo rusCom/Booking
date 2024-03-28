@@ -45,13 +45,13 @@ class OrderBabySeats {
     if (_babySeat0010 == 1) {
       res = "Люлька до 10 кг и ";
       if (_babySeat0918 == 1) {
-        res = res + "кресло от 9 до 18 кг";
+        res = "$resкресло от 9 до 18 кг";
       }
       if (_babySeat1525 == 1) {
-        res = res + "кресло от 15 до 25 кг";
+        res = "$resкресло от 15 до 25 кг";
       }
       if (_babySeat2236 == 1) {
-        res = res + "бустер от 22 до 36 кг";
+        res = "$resбустер от 22 до 36 кг";
       }
       return Text(res);
     }
@@ -63,7 +63,7 @@ class OrderBabySeats {
       if (_babySeat1525 == 1) {
         res = "Кресло от 15 до 25 кг";
       }
-      res = res + " и бустер от 22 до 36 кг";
+      res = "$res и бустер от 22 до 36 кг";
       return Text(res);
     }
 

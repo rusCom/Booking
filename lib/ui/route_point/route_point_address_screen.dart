@@ -1,18 +1,18 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/route_point.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/debug_print.dart';
+import 'package:booking/services/geo_service.dart';
+import 'package:booking/ui/route_point/route_point_search_bar.dart';
+import 'package:booking/ui/route_point/route_point_text_field.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/route_point.dart';
-import '../../services/app_blocs.dart';
-import '../../services/geo_service.dart';
-import '../utils/core.dart';
-import 'route_point_search_bar.dart';
-import 'route_point_text_field.dart';
 
 class RoutePointAddressScreen extends StatelessWidget {
   final String TAG = "RoutePointAddressScreen"; // ignore: non_constant_identifier_names
   final RoutePoint routeStreet;
 
-  const RoutePointAddressScreen({Key? key, required this.routeStreet}) : super(key: key);
+  const RoutePointAddressScreen({super.key, required this.routeStreet});
 
   @override
   Widget build(BuildContext context) {

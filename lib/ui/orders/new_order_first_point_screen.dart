@@ -1,13 +1,13 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/route_point.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/map_markers_service.dart';
 import 'package:booking/services/rest_service.dart';
+import 'package:booking/ui/route_point/route_point_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../models/main_application.dart';
-import '../../models/route_point.dart';
-import '../../services/app_blocs.dart';
-import '../../services/map_markers_service.dart';
-import '../route_point/route_point_screen.dart';
 
 class NewOrderFirstPointScreen extends StatelessWidget {
   final TextEditingController _controller = TextEditingController();

@@ -6,7 +6,7 @@ import 'arc_clipper.dart';
 class MainBackground extends StatelessWidget {
   final showLogo;
 
-  MainBackground({this.showLogo = false});
+  MainBackground({super.key, this.showLogo = false});
 
   Widget topHalf(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;

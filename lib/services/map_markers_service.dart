@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:ui' as ui;
 
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
+import 'package:booking/data/route_point.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../models/main_application.dart';
-import '../models/order_state.dart';
-import '../models/route_point.dart';
 import 'app_blocs.dart';
 import 'geo_service.dart';
 

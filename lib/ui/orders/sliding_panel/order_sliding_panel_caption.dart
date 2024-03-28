@@ -1,8 +1,7 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
 import 'package:flutter/material.dart';
 import 'package:progress_indicators/progress_indicators.dart';
-
-import '../../../models/main_application.dart';
-import '../../../models/order_state.dart';
 
 class OrderSlidingPanelCaption extends StatelessWidget {
   final OrderState orderState;

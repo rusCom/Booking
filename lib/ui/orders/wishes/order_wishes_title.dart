@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 class OrderWishesTitle extends StatelessWidget {
   final String title;
 
-  const OrderWishesTitle(this.title, {Key? key}) : super(key: key);
+  const OrderWishesTitle(this.title, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SizedBox(
+        const SizedBox(
           width: 4,
         ),
         IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
           iconSize: 30,
         ),
-        SizedBox(
+        const SizedBox(
           width: 16,
         ),
         Flexible(
@@ -25,7 +25,7 @@ class OrderWishesTitle extends StatelessWidget {
             title,
             // textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
           ),
         ),
       ],

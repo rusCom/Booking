@@ -1,20 +1,20 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/profile.dart';
+import 'package:booking/services/debug_print.dart';
+import 'package:booking/services/map_markers_service.dart';
+import 'package:booking/ui/main_screen.dart';
+import 'package:booking/ui/profile/profile_login_screen.dart';
+import 'package:booking/ui/widgets/background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../models/main_application.dart';
-import '../../models/profile.dart';
-import '../../services/map_markers_service.dart';
-import '../main_screen.dart';
-import '../profile/profile_login_screen.dart';
-import '../utils/core.dart';
-import '../widgets/background.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
@@ -64,8 +64,8 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     super.initState();
 
     _logoScaleAnimationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
-    Tween _logoScaleTween = Tween<double>(begin: 1, end: 0.8);
-    _logoScaleAnimation = _logoScaleTween.animate(_logoScaleAnimationController) as Animation<double>;
+    Tween logoScaleTween = Tween<double>(begin: 1, end: 0.8);
+    _logoScaleAnimation = logoScaleTween.animate(_logoScaleAnimationController) as Animation<double>;
     _logoScaleAnimationController.forward();
     _logoScaleAnimationController.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
@@ -74,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           _logoScaleAnimationController.forward();
         } else if (state == "main") {
           Navigator.pushReplacement(
-              context, PageTransition(type: PageTransitionType.fade, child: MainScreen(), duration: const Duration(seconds: 2)));
+              context, PageTransition(type: PageTransitionType.fade, child: const MainScreen(), duration: const Duration(seconds: 2)));
           // MainApplication().startTimer();
         } else if (state == "login") {
           _logoMoveAnimationControllerBottom.forward();
@@ -92,15 +92,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   initLogoMove() {
     int moveDuration = 500;
     _logoMoveAnimationControllerBottom = AnimationController(vsync: this, duration: Duration(milliseconds: moveDuration));
-    Tween _logoMoveTweenBottom = Tween<double>(begin: 1 / 3, end: 1 - 1 / 3);
-    _logoMoveAnimationBottom = _logoMoveTweenBottom.animate(_logoMoveAnimationControllerBottom) as Animation<double>;
+    Tween logoMoveTweenBottom = Tween<double>(begin: 1 / 3, end: 1 - 1 / 3);
+    _logoMoveAnimationBottom = logoMoveTweenBottom.animate(_logoMoveAnimationControllerBottom) as Animation<double>;
     _logoMoveAnimationBottom.addListener(() {
       setState(() {});
     });
 
     _logoMoveAnimationControllerLeft = AnimationController(vsync: this, duration: Duration(milliseconds: moveDuration));
-    Tween _logoMoveTweenLeft = Tween<double>(begin: 1 / 4, end: 1 / 2.5);
-    _logoMoveAnimationLeft = _logoMoveTweenLeft.animate(_logoMoveAnimationControllerLeft) as Animation<double>;
+    Tween logoMoveTweenLeft = Tween<double>(begin: 1 / 4, end: 1 / 2.5);
+    _logoMoveAnimationLeft = logoMoveTweenLeft.animate(_logoMoveAnimationControllerLeft) as Animation<double>;
     _logoMoveAnimationLeft.addListener(() {
       setState(() {});
     });
@@ -144,9 +144,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   @override
   void dispose() {
-    _logoMoveAnimationControllerBottom?.dispose();
-    _logoMoveAnimationControllerLeft?.dispose();
-    _logoScaleAnimationController?.dispose();
+    _logoMoveAnimationControllerBottom.dispose();
+    _logoMoveAnimationControllerLeft.dispose();
+    _logoScaleAnimationController.dispose();
     super.dispose();
   }
 

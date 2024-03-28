@@ -1,17 +1,17 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/profile.dart';
+import 'package:booking/ui/profile/profile_login_screen.dart';
+import 'package:booking/ui/splash/splash_screen.dart';
+import 'package:booking/ui/widgets/gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../models/main_application.dart';
-import '../../models/profile.dart';
-import '../splash/splash_screen.dart';
-import '../widgets/gradient_button.dart';
-import 'profile_login_screen.dart';
 
 class ProfileRegistrationScreen extends StatefulWidget {
   final Widget background;
 
-  ProfileRegistrationScreen({required this.background});
+  const ProfileRegistrationScreen({super.key, required this.background});
   @override
   _ProfileRegistrationScreenState createState() => _ProfileRegistrationScreenState();
 }
@@ -29,22 +29,22 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> w
     super.initState();
     int moveDuration = 500;
     _logoMoveAnimationControllerBottom = AnimationController(vsync: this, duration: Duration(milliseconds: moveDuration));
-    Tween _logoMoveTweenBottom = Tween<double>(begin: 1 - 1 / 3, end: 1 / 3);
-    _logoMoveAnimationBottom = _logoMoveTweenBottom.animate(_logoMoveAnimationControllerBottom!) as Animation<double>?;
+    Tween logoMoveTweenBottom = Tween<double>(begin: 1 - 1 / 3, end: 1 / 3);
+    _logoMoveAnimationBottom = logoMoveTweenBottom.animate(_logoMoveAnimationControllerBottom!) as Animation<double>?;
     _logoMoveAnimationBottom?.addListener(() {
       setState(() {});
     });
 
     _logoMoveAnimationControllerLeft = AnimationController(vsync: this, duration: Duration(milliseconds: moveDuration));
-    Tween _logoMoveTweenLeft = Tween<double>(begin: 1 / 2.5, end: 1 / 4);
-    _logoMoveAnimationLeft = _logoMoveTweenLeft.animate(_logoMoveAnimationControllerLeft!) as Animation<double>?;
+    Tween logoMoveTweenLeft = Tween<double>(begin: 1 / 2.5, end: 1 / 4);
+    _logoMoveAnimationLeft = logoMoveTweenLeft.animate(_logoMoveAnimationControllerLeft!) as Animation<double>?;
     _logoMoveAnimationLeft?.addListener(() {
       setState(() {});
     });
 
     _logoMoveAnimationControllerLeft?.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: SplashScreen()));
+        Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: const SplashScreen()));
         // Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: ProfileRegistrationScreen(background: background),duration: Duration(seconds: 2)));
       }
     });
@@ -92,7 +92,7 @@ class _ProfileRegistrationScreenState extends State<ProfileRegistrationScreen> w
                           children: <Widget>[
                             Padding(
                               padding: const EdgeInsets.only(right: 40, bottom: 30),
-                              child: Container(
+                              child: SizedBox(
                                 width: MediaQuery.of(context).size.width - 40,
                                 child: Material(
                                   elevation: 10,

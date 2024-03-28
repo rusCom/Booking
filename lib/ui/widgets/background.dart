@@ -7,7 +7,7 @@ class Background extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Stack(
+        const Stack(
           alignment: Alignment.bottomCenter,
           children: <Widget>[
             WavyHeader(),
@@ -16,10 +16,10 @@ class Background extends StatelessWidget {
         Expanded(
           child: Container(),
         ),
-        Stack(
+        const Stack(
           alignment: Alignment.bottomLeft,
           children: <Widget>[
-            const WavyFooter(),
+            WavyFooter(),
             CirclePink(),
             CircleYellow(),
           ],

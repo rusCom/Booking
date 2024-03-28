@@ -1,14 +1,14 @@
+import 'package:booking/data/route_point.dart';
+import 'package:booking/services/debug_print.dart';
+import 'package:booking/services/geo_service.dart';
+import 'package:booking/ui/route_point/route_point_screen.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/route_point.dart';
-import '../../services/geo_service.dart';
-import '../route_point/route_point_screen.dart';
-import '../utils/core.dart';
 
 class SystemGeocodeReplaceScreen extends StatefulWidget {
   final RoutePoint fromRoutePoint;
 
-  SystemGeocodeReplaceScreen(this.fromRoutePoint);
+  const SystemGeocodeReplaceScreen(this.fromRoutePoint, {super.key});
 
   @override
   _SystemGeocodeReplaceScreenState createState() => _SystemGeocodeReplaceScreenState();
@@ -26,14 +26,14 @@ class _SystemGeocodeReplaceScreenState extends State<SystemGeocodeReplaceScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Заменить точку геокодинга"),
-            Text("name: " + widget.fromRoutePoint.name),
-            Text("dsc: " + widget.fromRoutePoint.dsc),
-            Text("placeID: " + widget.fromRoutePoint.placeId),
+            const Text("Заменить точку геокодинга"),
+            Text("name: ${widget.fromRoutePoint.name}"),
+            Text("dsc: ${widget.fromRoutePoint.dsc}"),
+            Text("placeID: ${widget.fromRoutePoint.placeId}"),
             MaterialButton(
               onPressed: () async {
                 RoutePoint? destinationRoutePoint =
-                    await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => RoutePointScreen()));
+                    await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
                 if (destinationRoutePoint != null) {
                   setState(() {
                     toRoutePoint = destinationRoutePoint;
@@ -41,18 +41,18 @@ class _SystemGeocodeReplaceScreenState extends State<SystemGeocodeReplaceScreen>
                   });
                 }
               },
-              child: Text("Выбрать новую точку"),
+              child: const Text("Выбрать новую точку"),
             ),
             toRoutePoint != null
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("На следующую точку геокодинга"),
-                      Text("name: " + toRoutePoint.name),
-                      Text("dsc: " + toRoutePoint.dsc),
-                      Text("placeID: " + toRoutePoint.placeId),
+                      const Text("На следующую точку геокодинга"),
+                      Text("name: ${toRoutePoint.name}"),
+                      Text("dsc: ${toRoutePoint.dsc}"),
+                      Text("placeID: ${toRoutePoint.placeId}"),
                       MaterialButton(
-                        child: Text("Заменить. Подумай, прежде чем нажать"),
+                        child: const Text("Заменить. Подумай, прежде чем нажать"),
                         onPressed: () async {
                           GeoService().geocodeReplace(widget.fromRoutePoint.placeId, toRoutePoint.placeId);
                           Navigator.pop(context);
@@ -62,7 +62,7 @@ class _SystemGeocodeReplaceScreenState extends State<SystemGeocodeReplaceScreen>
                   )
                 : Container(),
             MaterialButton(
-              child: Text("Очистить кэш по геокодингу для выбранной точки."),
+              child: const Text("Очистить кэш по геокодингу для выбранной точки."),
               onPressed: () async {
                 GeoService().geocodeClear(widget.fromRoutePoint);
                 Navigator.pop(context);

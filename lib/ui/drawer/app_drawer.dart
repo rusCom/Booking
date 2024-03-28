@@ -1,8 +1,9 @@
+import 'package:booking/data/profile.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/profile.dart';
-
 class AppDrawer extends StatelessWidget {
+  const AppDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -33,7 +34,7 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _drawerItem(BuildContext context, IconData icon, String title, {String? subtitle, String? route}) {
+  Widget _drawerItem(BuildContext context, IconData icon, String title, {String? route}) {
     return ListTile(
       leading: Icon(
         icon,
@@ -41,7 +42,7 @@ class AppDrawer extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       onTap: () {
         if (route != null) {
@@ -58,7 +59,7 @@ class AppDrawer extends StatelessWidget {
         children: <Widget>[
           Icon(icon),
           Padding(
-            padding: EdgeInsets.only(left: 8.0),
+            padding: const EdgeInsets.only(left: 8.0),
             child: Text(text!),
           )
         ],
@@ -71,7 +72,7 @@ class AppDrawer extends StatelessWidget {
     return SizedBox(
       height: 225,
       child: DrawerHeader(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             fit: BoxFit.fill,
             image: AssetImage('assets/images/drawer_header_background.png'),
@@ -79,8 +80,8 @@ class AppDrawer extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage("assets/images/splash_logo.png"),
@@ -89,7 +90,7 @@ class AppDrawer extends StatelessWidget {
             ),
             Text(
               Profile().maskedPhone,
-              style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ],
         ),

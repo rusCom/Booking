@@ -1,16 +1,16 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_wishes.dart';
+import 'package:booking/data/payment_type.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/ui/orders/wishes/order_wishes_baby_seats.dart';
+import 'package:booking/ui/orders/wishes/order_wishes_driver_note.dart';
+import 'package:booking/ui/orders/wishes/order_wishes_switch.dart';
+import 'package:booking/ui/orders/wishes/order_wishes_title.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-import '../../../models/main_application.dart';
-import '../../../models/order_wishes.dart';
-import '../../../models/payment_type.dart';
-import '../../../services/app_blocs.dart';
-import '../wishes/order_wishes_baby_seats.dart';
-import '../wishes/order_wishes_driver_note.dart';
-import '../wishes/order_wishes_switch.dart';
-import '../wishes/order_wishes_title.dart';
 
 class OrderModalBottomSheets {
   static const borderRadius = Radius.circular(10.0);
@@ -434,7 +434,7 @@ class OrderModalBottomSheets {
       },
     ).whenComplete(() {
       if (entranceController.text != "") {
-        note = entranceController.text + " подъезд";
+        note = "${entranceController.text} подъезд";
       } else if (noteController.text != "") {
         note = noteController.text;
       }

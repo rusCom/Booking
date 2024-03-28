@@ -14,8 +14,7 @@ class OrderWishesSwitch extends StatefulWidget {
   final OrderWishesSwitchChangeCallback onChanged;
 
   const OrderWishesSwitch(
-      {Key? key, required this.orderWishesValue, required this.caption, required this.onChanged, required this.viewSwitch, required this.svgAssets})
-      : super(key: key);
+      {super.key, required this.orderWishesValue, required this.caption, required this.onChanged, required this.viewSwitch, required this.svgAssets});
 
   @override
   State<OrderWishesSwitch> createState() => _OrderWishesSwitchState();

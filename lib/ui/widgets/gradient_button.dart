@@ -5,11 +5,11 @@ class GradientButton extends StatelessWidget {
   final String text;
   final List<Color> gradient;
 
-  GradientButton({required this.onPressed, required this.text, required this.gradient});
+  const GradientButton({super.key, required this.onPressed, required this.text, required this.gradient});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 50.0,
       child: MaterialButton(
         onPressed: onPressed,

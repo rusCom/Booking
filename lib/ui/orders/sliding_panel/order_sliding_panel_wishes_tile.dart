@@ -1,15 +1,14 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/order_wishes.dart';
+import 'package:booking/ui/orders/wishes/order_wishes_title.dart';
+import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../../models/order_wishes.dart';
-import '../../utils/core.dart';
-import '../wishes/order_wishes_title.dart';
 
 class OrderSlidingPanelWishesTile extends StatelessWidget {
   final OrderWishes orderWishes;
 
-  OrderSlidingPanelWishesTile(this.orderWishes);
+  const OrderSlidingPanelWishesTile(this.orderWishes, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -78,14 +77,14 @@ class OrderSlidingPanelWishesTile extends StatelessWidget {
             minChildSize: 0.25,
             builder: (BuildContext context, ScrollController scrollController) {
               return Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(topRight: Const.modalBottomSheetsBorderRadius, topLeft: Const.modalBottomSheetsBorderRadius),
                     color: Colors.white),
                 child: Padding(
                   padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 8, right: 8, top: 16),
                   child: Column(
                     children: [
-                      OrderWishesTitle("Пожелания"),
+                      const OrderWishesTitle("Пожелания"),
                       Expanded(
                         child: ListView(
                           controller: scrollController,
@@ -120,7 +119,7 @@ class OrderSlidingPanelWishesTile extends StatelessWidget {
         height: Const.modalBottomSheetsLeadingSize,
         width: Const.modalBottomSheetsLeadingSize,
       ),
-      title: Text("Перевозка питомца"),
+      title: const Text("Перевозка питомца"),
     );
   }
 
@@ -132,7 +131,7 @@ class OrderSlidingPanelWishesTile extends StatelessWidget {
         height: Const.modalBottomSheetsLeadingSize,
         width: Const.modalBottomSheetsLeadingSize,
       ),
-      title: Text("Кондиционер"),
+      title: const Text("Кондиционер"),
     );
   }
 
@@ -144,7 +143,7 @@ class OrderSlidingPanelWishesTile extends StatelessWidget {
         height: Const.modalBottomSheetsLeadingSize,
         width: Const.modalBottomSheetsLeadingSize,
       ),
-      title: Text("Не курящий салон"),
+      title: const Text("Не курящий салон"),
     );
   }
 
@@ -182,7 +181,7 @@ class OrderSlidingPanelWishesTile extends StatelessWidget {
         height: Const.modalBottomSheetsLeadingSize,
         width: Const.modalBottomSheetsLeadingSize,
       ),
-      title: Text("Запланированная поездка"),
+      title: const Text("Запланированная поездка"),
       subtitle: Text(orderWishes.workDateCaption),
     );
   }

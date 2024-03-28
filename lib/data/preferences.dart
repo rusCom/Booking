@@ -1,3 +1,5 @@
+import 'package:booking/services/debug_print.dart';
+
 import '../ui/utils/core.dart';
 import 'order_tariff.dart';
 import 'payment_type.dart';
@@ -11,6 +13,7 @@ class Preferences {
   Preferences._internal();
 
   String supportPhone = "";
+  String? dispatcherPhone;
   String googleKey = "";
   bool mapDirections = false;
   List<PaymentType> paymentTypes = [];
@@ -27,6 +30,7 @@ class Preferences {
     DebugPrint().log(TAG, "parseData", jsonData);
 
     supportPhone = jsonData['support_phone'] ?? "";
+    dispatcherPhone = jsonData['dispatcher_phone'];
     googleKey = jsonData['google_key'] ?? "";
 
     if (jsonData['system'] != null) {
@@ -60,6 +64,12 @@ class Preferences {
       }
     }
     return result;
+  }
+
+  bool get canDispatcherCall {
+    if (dispatcherPhone == "") return false;
+    if (dispatcherPhone == null) return false;
+    return true;
   }
 
   Map<String, dynamic> toJson() => {

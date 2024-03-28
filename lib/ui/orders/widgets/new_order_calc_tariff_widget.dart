@@ -1,9 +1,8 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
+import 'package:booking/data/order_tariff.dart';
 import 'package:flutter/material.dart';
-
-import '../../../models/main_application.dart';
-import '../../../models/order_state.dart';
-import '../../../models/order_tariff.dart';
 
 class NewOrderCalcTariffWidget extends StatelessWidget {
   OrderTariff orderTariff = OrderTariff(type: "economy");

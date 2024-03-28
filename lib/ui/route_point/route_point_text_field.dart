@@ -8,8 +8,7 @@ class RoutePointTextField extends StatelessWidget {
   final FocusNode? focusNode;
   final bool autoFocus;
 
-  RoutePointTextField({Key? key, required this.hintText, required this.onChanged, this.focusNode, this.autoFocus = false, this.onSubmitted})
-      : super(key: key);
+  RoutePointTextField({super.key, required this.hintText, required this.onChanged, this.focusNode, this.autoFocus = false, this.onSubmitted});
 
   String get value {
     return _controller.value.text;

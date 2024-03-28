@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:booking/constants/style.dart';
@@ -8,10 +9,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:platform_device_id/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../services/debug_print.dart';
 import '../services/rest_service.dart';
 import '../ui/utils/core.dart';
 import 'order.dart';
@@ -40,7 +41,7 @@ class MainApplication {
   bool _dataCycle = false;
   bool _loadingDialog = false;
 
-  Map<String, dynamic> clientLinks = Map();
+  Map<String, dynamic> clientLinks = {};
   List<RoutePoint> nearbyRoutePoint = [];
   String? pushToken;
   PackageInfo? packageInfo;
@@ -57,7 +58,7 @@ class MainApplication {
 
   Future<bool> init(BuildContext context) async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    deviceId = (await PlatformDeviceId.getDeviceId)!;
+    deviceId = ""; // (await PlatformDeviceId.getDeviceId)!;
 
     packageInfo = await PackageInfo.fromPlatform();
 
@@ -72,7 +73,7 @@ class MainApplication {
     currentPosition = await Geolocator.getCurrentPosition();
 
     if (currentPosition == null) {
-      currentPosition = const Position(
+      currentPosition = Position(
           latitude: 54.7184554,
           longitude: 55.9257656,
           accuracy: 0.0,
@@ -81,7 +82,7 @@ class MainApplication {
           heading: 0.0,
           speedAccuracy: 0.0,
           altitudeAccuracy: 0.0,
-          timestamp: null,
+          timestamp: DateTime.now(),
           headingAccuracy: 0.0);
       _lastLocation = false;
     }
@@ -119,11 +120,9 @@ class MainApplication {
   }
 
   launchURL(String url) async {
-    Uri url0 = Uri.parse(url);
-    if (await canLaunchUrl(url0)) {
-      await launchUrl(url0);
-    } else {
-      throw 'Could not launch $url';
+    Uri _url = Uri.parse(url);
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
     }
   }
 
@@ -175,6 +174,7 @@ class MainApplication {
 
     if (jsonData.containsKey("preferences")) preferences.parseData(jsonData["preferences"]);
     if (jsonData.containsKey("profile")) Profile().parseData(jsonData["profile"]);
+
     if (jsonData.containsKey("order")) {
       if (jsonData["order"].toString() != "{}") {
         curOrder.parseData(jsonData["order"]);

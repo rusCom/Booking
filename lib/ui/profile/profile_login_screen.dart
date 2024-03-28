@@ -1,12 +1,12 @@
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/profile.dart';
+import 'package:booking/ui/profile/profile_registration_screen.dart';
+import 'package:booking/ui/widgets/gradient_button.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import 'package:page_transition/page_transition.dart';
 
-import '../../models/main_application.dart';
-import '../../models/profile.dart';
-import '../widgets/gradient_button.dart';
-import 'profile_registration_screen.dart';
 
 class ProfileLoginScreen extends StatefulWidget {
   final Widget background;

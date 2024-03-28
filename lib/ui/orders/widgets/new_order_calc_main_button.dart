@@ -1,10 +1,10 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/ui/orders/bottom_sheets/order_modal_bottom_sheets.dart';
 import 'package:flutter/material.dart';
 
-import '../../../models/main_application.dart';
-import '../../../models/order_state.dart';
-import '../../../services/app_blocs.dart';
-import '../bottom_sheets/order_modal_bottom_sheets.dart';
 
 class NewOrderMainButton extends StatelessWidget {
   const NewOrderMainButton({super.key});

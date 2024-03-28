@@ -1,21 +1,21 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_baby_seats.dart';
+import 'package:booking/data/preferences.dart';
+import 'package:booking/ui/orders/wishes/order_wishes_title.dart';
+import 'package:booking/ui/utils/core.dart';
+import 'package:booking/ui/widgets/number_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../models/main_application.dart';
-import '../../../models/order_baby_seats.dart';
-import '../../../models/preferences.dart';
-import '../../utils/core.dart';
-import '../../widgets/number_counter.dart';
-import 'order_wishes_title.dart';
 
-typedef void OrderWishesBabySeatsChangeCallback(OrderBabySeats value);
+typedef OrderWishesBabySeatsChangeCallback = void Function(OrderBabySeats value);
 
 class OrderWishesBabySeats extends StatefulWidget {
   final OrderBabySeats orderBabySeats;
   final OrderWishesBabySeatsChangeCallback onChanged;
 
-  const OrderWishesBabySeats({Key? key, required this.orderBabySeats, required this.onChanged}) : super(key: key);
+  const OrderWishesBabySeats({super.key, required this.orderBabySeats, required this.onChanged});
 
   @override
   _OrderWishesBabySeatsState createState() => _OrderWishesBabySeatsState();

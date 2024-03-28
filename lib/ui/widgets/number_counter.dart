@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 
-typedef void NumberCounterChangeCallback(num value);
+typedef NumberCounterChangeCallback = void Function(num value);
 
 class NumberCounter extends StatelessWidget {
   final NumberCounterChangeCallback onChanged;
 
   NumberCounter({
-    Key? key,
+    super.key,
     required num initialValue,
     required this.minValue,
     required this.maxValue,
     required this.onChanged,
     this.decimalPlaces = 0,
     required this.color,
-    TextStyle? this.textStyle,
+    this.textStyle,
     this.step = 1,
     this.buttonSize = 27,
   })  : assert(maxValue > minValue),
         assert(initialValue >= minValue && initialValue <= maxValue),
         assert(step > 0),
-        selectedValue = initialValue,
-        super(key: key);
+        selectedValue = initialValue;
 
   ///min value user can pick
   final num minValue;

@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:booking/constants/style.dart';
 import 'package:booking/services/my_http_overrides.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -22,24 +22,30 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((_) async {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     /// Initializing the AppMetrica SDK.
-    await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
+    // await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
     HttpOverrides.global = MyHttpOverrides();
-    runApp(MyApp());
+    runApp(const MyApp());
   });
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MainApp();
+    return const MainApp();
   }
 }
 
 class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,7 +75,7 @@ class MainApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/history':
-            return PageTransition(child: OrdersHistoryScreen(), type: PageTransitionType.fade, duration: const Duration(seconds: 1));
+            return PageTransition(child: const OrdersHistoryScreen(), type: PageTransitionType.fade, duration: const Duration(seconds: 1));
           default:
             return null;
         }

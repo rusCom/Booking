@@ -1,21 +1,21 @@
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_application.dart';
+import 'package:booking/data/order_state.dart';
+import 'package:booking/data/route_point.dart';
+import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/debug_print.dart';
+import 'package:booking/services/geo_service.dart';
 import 'package:booking/ui/route_point/route_point_address_screen.dart';
+import 'package:booking/ui/route_point/route_point_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-import '../../models/main_application.dart';
-import '../../models/order_state.dart';
-import '../../models/route_point.dart';
-import '../../services/app_blocs.dart';
-import '../../services/geo_service.dart';
-import '../utils/core.dart';
-import 'route_point_search_bar.dart';
 
 class RoutePointScreen extends StatelessWidget {
   final String TAG = "RoutePointScreen"; // ignore: non_constant_identifier_names
   final bool isFirst, viewReturn;
 
-  const RoutePointScreen({Key? key, this.isFirst = false, this.viewReturn = true}) : super(key: key);
+  const RoutePointScreen({super.key, this.isFirst = false, this.viewReturn = true});
 
   @override
   Widget build(BuildContext context) {
@@ -48,33 +48,31 @@ class RoutePointScreen extends StatelessWidget {
   }
 
   Widget _nearbyRoutePoint(BuildContext context) {
-    if (MainApplication().nearbyRoutePoint != null) {
-      var routePoints = MainApplication().nearbyRoutePoint;
-      return Expanded(
-        child: ListView.builder(
-          itemCount: routePoints.length,
-          itemBuilder: (BuildContext context, int index) {
-            RoutePoint routePoint = routePoints.elementAt(index);
-            return ListTile(
-              title: Text(routePoint.name),
-              subtitle: Text(routePoint.dsc),
-              leading: routePoint.getIcon(),
-              onTap: () async {
-                DebugPrint().log(TAG, "onTap", routePoint.name);
-                if (routePoint.needDetail) {
-                  GeoService().detail(routePoint).then((routePoint) {
-                    Navigator.pop(context, routePoint);
-                  });
-                } else {
+    var routePoints = MainApplication().nearbyRoutePoint;
+    return Expanded(
+      child: ListView.builder(
+        itemCount: routePoints.length,
+        itemBuilder: (BuildContext context, int index) {
+          RoutePoint routePoint = routePoints.elementAt(index);
+          return ListTile(
+            title: Text(routePoint.name),
+            subtitle: Text(routePoint.dsc),
+            leading: routePoint.getIcon(),
+            onTap: () async {
+              DebugPrint().log(TAG, "onTap", routePoint.name);
+              if (routePoint.needDetail) {
+                GeoService().detail(routePoint).then((routePoint) {
                   Navigator.pop(context, routePoint);
-                }
-              },
-            );
-          },
-        ),
-      );
-    }
-
+                });
+              } else {
+                Navigator.pop(context, routePoint);
+              }
+            },
+          );
+        },
+      ),
+    );
+  
     return Container();
   }
 
