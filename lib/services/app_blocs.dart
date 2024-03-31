@@ -41,19 +41,6 @@ class AppBlocs {
     return _geoAutocompleteAddressController;
   }
 
-  final StreamController _mapMarkersController = StreamController.broadcast();
-
-  Stream? get mapMarkersStream => _mapMarkersController.stream;
-
-  StreamController? get mapMarkersController => _mapMarkersController;
-
-  final StreamController _mapPolylinesController =
-      StreamController<Map<PolylineId, Polyline>>.broadcast();
-
-  Stream? get mapPolylinesStream => _mapPolylinesController.stream;
-
-  StreamController? get mapPolylinesController => _mapPolylinesController;
-
   StreamController<OrderState>? _orderStateController;
 
   Stream<OrderState>? get orderStateStream => orderStateController?.stream;
@@ -113,8 +100,6 @@ class AppBlocs {
     if (_geoAutocompleteController != null) _geoAutocompleteController?.close();
     if (_geoAutocompleteAddressController != null)
       _geoAutocompleteAddressController?.close();
-    _mapMarkersController.close();
-    _mapPolylinesController.close();
     if (_orderStateController != null) _orderStateController?.close();
     if (_orderRoutePointsController != null)
       _orderRoutePointsController?.close();

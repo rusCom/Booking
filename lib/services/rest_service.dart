@@ -9,8 +9,7 @@ import 'package:http/http.dart' as http;
 import 'debug_print.dart';
 
 class RestService {
-  final String TAG =
-      (RestService).toString(); // ignore: non_constant_identifier_names
+  final String TAG = (RestService).toString(); // ignore: non_constant_identifier_names
   static final RestService _singleton = RestService._internal();
 
   factory RestService() => _singleton;
@@ -23,15 +22,14 @@ class RestService {
     late Map<String, dynamic> result;
     String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
     DebugPrint().log(TAG, "httpGet", "path = $url");
-    result = await httpPOST(url, body, auth: _authHeader());
+    result = await _httpPOSTAuth(url, body, auth: _authHeader());
 
     if (!result.containsKey("server_status")) {
       for (var host in GlobalConfigs().get("restHost")) {
-        if ((!result.containsKey("server_status")) &
-            (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
+        if ((!result.containsKey("server_status")) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
           url = host + path;
           // DebugPrint().log(TAG, "httpGet", "path = $url");
-          result = await httpPOST(url, body, auth: _authHeader());
+          result = await _httpPOSTAuth(url, body, auth: _authHeader());
           if (result.containsKey("server_status")) {
             _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
           }
@@ -54,15 +52,14 @@ class RestService {
     String url = GlobalConfigs().get("restHost")[_curRestIndex] + path;
 
     DebugPrint().log(TAG, "httpGet", "path = $url");
-    result = await httpGET(url, auth: _authHeader());
+    result = await _httpGETAuth(url, auth: _authHeader());
 
     if (!result.containsKey("server_status")) {
       for (var host in GlobalConfigs().get("restHost")) {
-        if ((!result.containsKey("server_status")) &
-            (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
+        if ((!result.containsKey("server_status")) & (GlobalConfigs().get("restHost").indexOf(host) != _curRestIndex)) {
           url = host + path;
           // DebugPrint().log(TAG, "httpGet", "path = $url");
-          result = await httpGET(url, auth: _authHeader());
+          result = await _httpGETAuth(url, auth: _authHeader());
           if (result.containsKey("server_status")) {
             _curRestIndex = GlobalConfigs().get("restHost").indexOf(host);
           }
@@ -74,7 +71,7 @@ class RestService {
     return result;
   }
 
-  Future<Map<String, dynamic>> httpGET(url, {auth = "auth"}) async {
+  Future<Map<String, dynamic>> _httpGETAuth(url, {auth = "auth"}) async {
     late Map<String, dynamic> result;
     late http.Response response;
     try {
@@ -111,16 +108,12 @@ class RestService {
     return result;
   }
 
-  Future<Map<String, dynamic>> httpPOST(url, Map<String, dynamic> body,
-      {auth = "auth"}) async {
+  Future<Map<String, dynamic>> _httpPOSTAuth(url, Map<String, dynamic> body, {auth = "auth"}) async {
     late Map<String, dynamic> result;
     late http.Response response;
     try {
-      response = await http
-          .post(Uri.parse(url),
-              headers: {HttpHeaders.authorizationHeader: "Bearer $auth"},
-              body: jsonEncode(body).toString())
-          .timeout(
+      response =
+          await http.post(Uri.parse(url), headers: {HttpHeaders.authorizationHeader: "Bearer $auth"}, body: jsonEncode(body).toString()).timeout(
         const Duration(seconds: 5),
         onTimeout: () {
           return http.Response("", 504);
@@ -152,7 +145,7 @@ class RestService {
 
   static String _authHeader() {
     var header = {
-      // "deviceId": MainApplication().deviceId,
+      "deviceId": MainApplication().deviceId,
       "dispatching": GlobalConfigs().get("dispatchingToken"),
       "location": MainApplication().currentPosition?.toJson(),
       "platform": "android",

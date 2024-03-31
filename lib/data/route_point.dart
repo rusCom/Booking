@@ -1,3 +1,4 @@
+import 'package:booking/main_utils.dart';
 import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -38,8 +39,8 @@ class RoutePoint {
       name: jsonData['name'] ?? "",
       dsc: jsonData['dsc'] ?? "",
       note: jsonData['note'] ?? "",
-      lt: double.tryParse(jsonData['lt'].toString()) ?? 0,
-      ln: double.tryParse(jsonData['ln'].toString()) ?? 0,
+      lt: MainUtils.parseDouble(jsonData['lt']),
+      ln: MainUtils.parseDouble(jsonData['ln']),
       needDetail: MainUtils.parseBool(jsonData['need_detail']),
       type: jsonData['type'] ?? "",
       placeId: jsonData['place_id'] ?? "",

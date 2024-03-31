@@ -1,14 +1,13 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:booking/data/main_location.dart';
 
 class Agent {
   final String guid;
   final String name;
   final String car;
   final String phone;
-  final double lt;
-  final double ln;
+  final MainLocation location;
 
-  Agent({this.guid = "", this.name = "", this.car = "", this.phone = "", required this.lt, required this.ln});
+  Agent({this.guid = "", this.name = "", this.car = "", this.phone = "", required this.location});
 
   factory Agent.fromJson(Map<String, dynamic> jsonData) {
     return Agent(
@@ -16,8 +15,7 @@ class Agent {
       name: jsonData['name'] ?? "",
       car: jsonData['car'] ?? "",
       phone: jsonData['phone'] ?? "",
-      lt: double.tryParse(jsonData['lt'].toString()) ?? 0,
-      ln: double.tryParse(jsonData['ln'].toString()) ?? 0,
+      location: MainLocation.fromJson(jsonData['location']),
     );
   }
 
@@ -26,16 +24,11 @@ class Agent {
         "name": name,
         "car": car,
         "phone": phone,
-        "lt": lt,
-        "ln": ln,
+        "location": location,
       };
 
   @override
   String toString() {
     return toJson().toString();
-  }
-
-  LatLng get location {
-    return LatLng(lt, ln);
   }
 }

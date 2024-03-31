@@ -2,6 +2,7 @@ import 'package:booking/data/main_application.dart';
 import 'package:booking/data/order_state.dart';
 import 'package:booking/data/preferences.dart';
 import 'package:booking/services/app_blocs.dart';
+import 'package:booking/services/debug_print.dart';
 import 'package:booking/services/map_markers_service.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configs/global_configs.dart';
@@ -14,75 +15,56 @@ import 'orders/sliding_panel/order_sliding_panel.dart';
 import 'system/system_geocde_replace_screen.dart';
 import 'system/system_geocode_address_replace_screen.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class MainScreen extends StatelessWidget  {
+  MainScreen({super.key});
 
-  @override
-  _MainScreenState createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  late GoogleMapController _mapController;
-  late Set<Marker> _markers;
-  var scaffoldKey = GlobalKey<ScaffoldState>();
+  late final GoogleMapController _mapController;
+  late final BuildContext _buildContext;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   MapType _currentMapType = MapType.normal;
 
-  Map<PolylineId, Polyline> _polylines = {};
-  late NewOrderFirstPointScreen newOrderFirstPointScreen;
-  late NewOrderCalcScreen newOrderCalcScreen;
+  NewOrderFirstPointScreen newOrderFirstPointScreen = NewOrderFirstPointScreen();
+  NewOrderCalcScreen newOrderCalcScreen = const NewOrderCalcScreen();
 
-  @override
-  void initState() {
-    super.initState();
-    _markers = MapMarkersService().markers();
-    AppBlocs().mapMarkersStream?.listen((markers) {
-      MapMarkersService().getMapPolyline();
-      setState(() {
-        _markers = markers;
-      });
-    });
 
-    AppBlocs().mapPolylinesStream?.listen((polylines) {
-      setState(() {
-        if (polylines == null) {
-          _polylines.clear();
-        } else {
-          _polylines = polylines;
-        }
-      });
-    });
-
-    newOrderFirstPointScreen = NewOrderFirstPointScreen();
-    newOrderCalcScreen = const NewOrderCalcScreen();
-  }
 
   @override
   Widget build(BuildContext context) {
+    DebugPrint().flog("MainScreen build state");
+    _buildContext = context;
+    final googleMap = StreamBuilder<Set<Marker>>(
+        stream: MapMarkersService().mapMarkerStream,
+        builder: (context, snapshot) {
+          // DebugPrint().flog("MainScreen map builder start");
+          return GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: MainApplication().currentLocation,
+              zoom: 17.0,
+            ),
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            mapType: _currentMapType,
+            compassEnabled: true,
+            markers: MapMarkersService().markers(),
+            polylines: MapMarkersService().polylines(),
+            onCameraMove: _onCameraMove,
+            onCameraIdle: _onCameraIdle,
+            onTap: _onMapTap,
+          );
+        });
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer: GlobalConfigs().get("tmp_drawer") ? const AppDrawer() : Container(),
+        drawer:
+            GlobalConfigs().get("tmp_drawer") ? const AppDrawer() : Container(),
         drawerEnableOpenDragGesture: false,
         body: Stack(
-          children: <Widget>[
-            GoogleMap(
-              initialCameraPosition: CameraPosition(
-                target: MainApplication().currentLocation,
-                zoom: 17.0,
-              ),
-              onMapCreated: _onMapCreated,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              mapType: _currentMapType,
-              compassEnabled: true,
-              markers: _markers,
-              polylines: Set<Polyline>.of(_polylines.values),
-              onCameraMove: _onCameraMove,
-              onCameraIdle: _onCameraIdle,
-              onTap: _onMapTap,
-            ),
+          children: [
+            googleMap,
             Center(
               child: StreamBuilder<Object>(
                 stream: AppBlocs().orderStateStream,
@@ -96,7 +78,8 @@ class _MainScreenState extends State<MainScreen> {
                     case OrderState.newOrderCalculated:
                       return newOrderCalcScreen;
                     default:
-                      return OrderSlidingPanel(curOrder: MainApplication().curOrder);
+                      return OrderSlidingPanel(
+                          curOrder: MainApplication().curOrder);
                   }
                 },
               ),
@@ -157,7 +140,12 @@ class _MainScreenState extends State<MainScreen> {
                           mini: true,
                           heroTag: '_mapAdminGeocodeReplace',
                           onPressed: () => Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => SystemGeocodeReplaceScreen(MapMarkersService().pickUpRoutePoint))),
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      SystemGeocodeReplaceScreen(
+                                          MapMarkersService()
+                                              .pickUpRoutePoint))),
                           backgroundColor: Colors.green,
                           child: const Icon(
                             Icons.find_replace,
@@ -174,8 +162,10 @@ class _MainScreenState extends State<MainScreen> {
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SystemGeocodeAddressReplaceScreen(
-                                routePoint: MapMarkersService().pickUpRoutePoint,
+                              builder: (context) =>
+                                  SystemGeocodeAddressReplaceScreen(
+                                routePoint:
+                                    MapMarkersService().pickUpRoutePoint,
                                 location: MapMarkersService().pickUpLocation,
                               ),
                             ),
@@ -205,7 +195,9 @@ class _MainScreenState extends State<MainScreen> {
     }
     _onCameraIdle();
     if (MainApplication().curOrder.mapBoundsIcon) {
-      MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
+      MainApplication().mapController?.animateCamera(
+          CameraUpdate.newLatLngBounds(
+              MapMarkersService().mapBounds(), Preferences().systemMapBounds));
     }
   }
 
@@ -233,23 +225,26 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onMapTypeButtonPressed() {
-    setState(() {
-      _currentMapType = _currentMapType == MapType.normal ? MapType.satellite : MapType.normal;
-    });
+    _currentMapType = _currentMapType == MapType.normal
+        ? MapType.satellite
+        : MapType.normal;
+    MapMarkersService().sinkStreamController();
   }
 
   Future<bool> _onWillPop() async {
     if (scaffoldKey.currentState!.isDrawerOpen) {
-      Navigator.pop(context);
+      Navigator.pop(_buildContext);
       return false;
     }
 
     // Если статус заказа - идет расчёт стоимости, то ничего не делаем
-    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculating) {
+    if (MainApplication().curOrder.orderState ==
+        OrderState.newOrderCalculating) {
       return false;
     }
     // Если расчёт стоимости произведен, то возвращаем на новый заказ
-    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
+    if (MainApplication().curOrder.orderState ==
+        OrderState.newOrderCalculated) {
       newOrderCalcScreen.backPressed();
       return false;
     }
@@ -258,6 +253,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _onMapBoundsButtonPressed() {
-    MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
+    MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(
+        MapMarkersService().mapBounds(), Preferences().systemMapBounds));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:booking/main_utils.dart';
 import 'package:booking/services/debug_print.dart';
 
 import '../ui/utils/core.dart';
@@ -15,7 +16,6 @@ class Preferences {
   String supportPhone = "";
   String? dispatcherPhone;
   String googleKey = "";
-  bool mapDirections = false;
   List<PaymentType> paymentTypes = [];
   List<OrderTariff> orderTariffs = [];
   bool geocodeMove = false;
@@ -35,7 +35,6 @@ class Preferences {
 
     if (jsonData['system'] != null) {
       systemMapAdmin = MainUtils.parseBool(jsonData['system']['map_admin']);
-      mapDirections = MainUtils.parseBool(jsonData['system']['map_directions']);
       systemHttpTimeOut = MainUtils.parseInt(jsonData['system']['http_timeout'], def: 20);
       systemTimerTask = MainUtils.parseInt(jsonData['system']['timer_task'], def: 5);
     }

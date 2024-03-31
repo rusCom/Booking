@@ -1,20 +1,23 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:booking/constants/style.dart';
+import 'package:booking/data/main_location.dart';
+import 'package:booking/main_utils.dart';
+import 'package:booking/services/map_markers_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:platform_device_id_v3/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../services/debug_print.dart';
 import '../services/rest_service.dart';
-import '../ui/utils/core.dart';
 import 'order.dart';
 import 'order_state.dart';
 import 'preferences.dart';
@@ -58,7 +61,7 @@ class MainApplication {
 
   Future<bool> init(BuildContext context) async {
     _sharedPreferences = await SharedPreferences.getInstance();
-    deviceId = ""; // (await PlatformDeviceId.getDeviceId)!;
+    deviceId = (await PlatformDeviceId.getDeviceId)!;
 
     packageInfo = await PackageInfo.fromPlatform();
 
@@ -104,7 +107,14 @@ class MainApplication {
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     pushToken = await messaging.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      _loadDataCycle();
+      DebugPrint().log("FirebaseMessaging", "onNewMessage", message.data.toString());
+      if (message.data.isNotEmpty){
+        if (message.data["type"] == "new_state")_loadDataCycle();
+        if (message.data["agent_location"]){
+          MainLocation mainLocation = MainLocation.fromJson(message.data["location"]);
+          MapMarkersService().addAgentLocation(mainLocation);
+        }
+      }
     });
 
     return true;
@@ -157,32 +167,44 @@ class MainApplication {
 
   parseData(Map<String, dynamic>? jsonData) {
     DebugPrint().log(TAG, "parseData", jsonData);
-
     if (jsonData == null) return;
-    clientLinks['privacy_policy'] = MainUtils.jsonGetString(jsonData, 'privacy_policy');
-    clientLinks['license_agreement'] = MainUtils.jsonGetString(jsonData, 'license_agreement');
 
-    if (jsonData.containsKey("client_links")) {
-      clientLinks['privacy_policy'] = jsonData['client_links']['support_phone'] ?? "";
-      clientLinks['license_agreement'] = jsonData['client_links']['license_agreement'] ?? "";
-    }
+    try {
+      clientLinks['privacy_policy'] = MainUtils.jsonGetString(jsonData, 'privacy_policy');
+      clientLinks['license_agreement'] = MainUtils.jsonGetString(jsonData, 'license_agreement');
 
-    if (jsonData.containsKey("nearby_geo_objects")) {
-      Iterable list = jsonData['nearby_geo_objects'];
-      nearbyRoutePoint = list.map((model) => RoutePoint.fromJson(model)).toList();
-    }
+      if (jsonData.containsKey("client_links")) {
+        clientLinks['privacy_policy'] = jsonData['client_links']['support_phone'] ?? "";
+        clientLinks['license_agreement'] = jsonData['client_links']['license_agreement'] ?? "";
+      }
 
-    if (jsonData.containsKey("preferences")) preferences.parseData(jsonData["preferences"]);
-    if (jsonData.containsKey("profile")) Profile().parseData(jsonData["profile"]);
+      if (jsonData.containsKey("nearby_geo_objects")) {
+        Iterable list = jsonData['nearby_geo_objects'];
+        nearbyRoutePoint = list.map((model) => RoutePoint.fromJson(model)).toList();
+      }
 
-    if (jsonData.containsKey("order")) {
-      if (jsonData["order"].toString() != "{}") {
-        curOrder.parseData(jsonData["order"]);
+      if (jsonData.containsKey("preferences")) preferences.parseData(jsonData["preferences"]);
+      if (jsonData.containsKey("profile")) Profile().parseData(jsonData["profile"]);
+
+      if (jsonData.containsKey("order")) {
+        if (jsonData["order"].toString() != "{}") {
+          curOrder.parseData(jsonData["order"]);
+        } else {
+          curOrder.orderState = OrderState.newOrder;
+        }
       } else {
         curOrder.orderState = OrderState.newOrder;
       }
-    } else {
-      curOrder.orderState = OrderState.newOrder;
+
+    } catch (exception, stacktrace) {
+      Map<String, dynamic> data = {"method": "parserData",
+        "exception": exception.toString(),
+        "stacktrace": stacktrace.toString()
+      };
+      RestService().httpPost("/server_error", data);
+      if (GlobalConfigs().get("isTest")) {
+        Fluttertoast.showToast(msg: exception.toString(), gravity: ToastGravity.TOP);
+      }
     }
   }
 

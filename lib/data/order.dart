@@ -1,4 +1,5 @@
 import 'package:booking/data/preferences.dart';
+import 'package:booking/main_utils.dart';
 import 'package:booking/services/app_blocs.dart';
 import 'package:booking/services/debug_print.dart';
 import 'package:booking/services/map_markers_service.dart';
@@ -209,7 +210,7 @@ class Order {
 
   void parseData(Map<String, dynamic> jsonData, {bool isAnimateCamera = true}) {
     DebugPrint().log(TAG, "parseData", jsonData.toString());
-    guid = jsonData['guid'];
+
     cost = jsonData['price'];
     selectedPaymentType = jsonData['payment'] ?? "";
     if (jsonData['wishes'] != null) {
@@ -242,7 +243,7 @@ class Order {
     }
     if (jsonData.containsKey("agent")) {
       agent = Agent.fromJson(jsonData['agent']);
-      MapMarkersService().agentMarkerRefresh();
+      MapMarkersService().agentMarkerRefresh(agent!.location);
     } else {
       agent = null;
       MapMarkersService().clearAgentMarker();
@@ -261,6 +262,16 @@ class Order {
         }
       } // if (_lastRoutePoints != jsonData['route'].toString()){
     }
+
+
+    if (guid != jsonData['guid']){
+      guid = jsonData['guid'];
+      AppBlocs().orderStateController?.sink.add(_orderState);
+      MapMarkersService().refresh();
+      MainApplication().playAudioAlarmOrderStateChange();
+    }
+
+
     DebugPrint().log(TAG, "parseData", toString());
   }
 

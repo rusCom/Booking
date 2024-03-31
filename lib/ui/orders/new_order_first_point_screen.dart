@@ -159,7 +159,7 @@ class NewOrderFirstPointScreen extends StatelessWidget {
 
   void onCameraMove(CameraPosition position) {
     MapMarkersService().pickUpLocation = position.target;
-    MapMarkersService().zoomLevel = position.zoom;
+
   }
 
   void setPickUpRoutePoint(RoutePoint routePoint) {

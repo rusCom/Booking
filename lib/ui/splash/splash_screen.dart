@@ -8,6 +8,7 @@ import 'package:booking/ui/widgets/background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -32,12 +33,21 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   late AnimationController _logoMoveAnimationControllerBottom, _logoMoveAnimationControllerLeft;
 
   startTime() async {
-    DebugPrint().log(TAG, "startTime", "start MainApplication().init(context)");
+    DebugPrint().log(TAG, "startTime", "start init");
+    /// Initializing the AppMetrica SDK.
+    // await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
+    await Permission.notification.isDenied.then((value) async => {
+      if (value){
+        await Permission.notification.request()
+      }
+    });
+
+    if (!mounted) return;
     await MainApplication().init(context);
     if (!mounted) return;
     await MapMarkersService().init(context);
-    DebugPrint().log(TAG, "startTime", "start profileAuth()");
     await profileAuth();
+    DebugPrint().log(TAG, "startTime", "complite init");
   }
 
   profileAuth() async {
@@ -74,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           _logoScaleAnimationController.forward();
         } else if (state == "main") {
           Navigator.pushReplacement(
-              context, PageTransition(type: PageTransitionType.fade, child: const MainScreen(), duration: const Duration(seconds: 2)));
+              context, PageTransition(type: PageTransitionType.fade, child: MainScreen(), duration: const Duration(seconds: 2)));
           // MainApplication().startTimer();
         } else if (state == "login") {
           _logoMoveAnimationControllerBottom.forward();

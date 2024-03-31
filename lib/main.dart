@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:booking/constants/style.dart';
 import 'package:booking/services/my_http_overrides.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,9 +27,6 @@ void main() {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-
-    /// Initializing the AppMetrica SDK.
-    // await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
     HttpOverrides.global = MyHttpOverrides();
     runApp(const MyApp());
   });
@@ -68,7 +67,7 @@ class MainApp extends StatelessWidget {
           )),
       initialRoute: '/splash',
       routes: {
-        '/main': (context) => const MainScreen(),
+        '/main': (context) => MainScreen(),
         '/splash': (context) => const SplashScreen(),
         '/login': (context) => const ProfileLoginScreen(background: Background()),
       },
