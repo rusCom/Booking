@@ -1,5 +1,4 @@
 import 'package:booking/main_utils.dart';
-import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:uuid/uuid.dart';

@@ -1,7 +1,6 @@
 import 'package:booking/main_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../ui/utils/core.dart';
 import 'preferences.dart';
 
 class OrderBabySeats {

@@ -7,7 +7,6 @@ import 'package:booking/ui/route_point/route_point_search_bar.dart';
 import 'package:booking/ui/route_point/route_point_text_field.dart';
 import 'package:flutter/material.dart';
 
-
 class RoutePointAddressScreen extends StatelessWidget {
   final String TAG = "RoutePointAddressScreen"; // ignore: non_constant_identifier_names
   final RoutePoint routeStreet;
@@ -16,6 +15,7 @@ class RoutePointAddressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DebugPrint().flog("RoutePointAddressScreen build");
     RoutePointTextField? numberRoutePointTextField, splashRoutePointTextField;
     FocusNode textSecondFocusNode = FocusNode();
     RoutePointSearchBar routePointSearchBar = RoutePointSearchBar(
@@ -34,7 +34,16 @@ class RoutePointAddressScreen extends StatelessWidget {
       onChanged: (value) => _autocompleteStreetAddress(routeStreet, numberRoutePointTextField, splashRoutePointTextField),
       focusNode: textSecondFocusNode,
     );
-    _autocompleteStreetAddress(routeStreet, numberRoutePointTextField, splashRoutePointTextField);
+    // _autocompleteStreetAddress(routeStreet, numberRoutePointTextField, splashRoutePointTextField);
+    GeoService().autocompleteStreetAddress(routeStreet).then((result) {
+      if (result == null) {
+        List<RoutePoint> listRoutePoints = [];
+        listRoutePoints.add(routeStreet);
+        AppBlocs().geoAutocompleteAddressController?.sink.add(listRoutePoints);
+      } else {
+        AppBlocs().geoAutocompleteAddressController?.sink.add(result);
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(

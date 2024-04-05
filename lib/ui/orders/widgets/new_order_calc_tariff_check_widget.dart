@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'new_order_calc_tariff_widget.dart';
 
 class NewOrderCalcTariffCheckWidget extends StatelessWidget {
+  const NewOrderCalcTariffCheckWidget({super.key});
+
   Widget _getOrderTariffContainer(String orderTariffName) {
     for (var searchOrderTariff in MainApplication().curOrder.orderTariffs) {
       if (searchOrderTariff.type == orderTariffName) {

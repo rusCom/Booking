@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:booking/constants/style.dart';
 import 'package:booking/services/my_http_overrides.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

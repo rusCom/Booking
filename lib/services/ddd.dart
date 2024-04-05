@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'package:vector_math/vector_math.dart';
 class HomeScreen extends StatefulWidget {
   static const id = "HOME_SCREEN";
 
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -48,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final currentLocationCamera = const CameraPosition(
+    const currentLocationCamera = CameraPosition(
       target: LatLng(37.42796133580664, -122.085749655962),
       zoom: 14.4746,
     );
@@ -69,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               _controller = controller;
             },
             markers: Set<Marker>.of(snapshot.data ?? []),
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
           );
         });
 

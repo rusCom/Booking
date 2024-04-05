@@ -4,7 +4,6 @@ import 'package:booking/services/app_blocs.dart';
 import 'package:booking/services/debug_print.dart';
 import 'package:booking/services/map_markers_service.dart';
 import 'package:booking/services/rest_service.dart';
-import 'package:booking/ui/utils/core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -244,6 +243,8 @@ class Order {
     if (jsonData.containsKey("agent")) {
       agent = Agent.fromJson(jsonData['agent']);
       MapMarkersService().agentMarkerRefresh(agent!.location);
+      // DebugPrint().flog("jsonData['agent']['location'] = ${jsonData['agent']['location']}");
+      // MapMarkersService().addAgentLocation(MainLocation.fromJson(jsonData['agent']['location']));
     } else {
       agent = null;
       MapMarkersService().clearAgentMarker();

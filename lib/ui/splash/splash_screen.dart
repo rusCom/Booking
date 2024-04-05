@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -34,13 +33,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   startTime() async {
     DebugPrint().log(TAG, "startTime", "start init");
+
     /// Initializing the AppMetrica SDK.
     // await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
     await Permission.notification.isDenied.then((value) async => {
-      if (value){
-        await Permission.notification.request()
-      }
-    });
+          if (value) {await Permission.notification.request()}
+        });
 
     if (!mounted) return;
     await MainApplication().init(context);
@@ -84,7 +82,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           _logoScaleAnimationController.forward();
         } else if (state == "main") {
           Navigator.pushReplacement(
-              context, PageTransition(type: PageTransitionType.fade, child: MainScreen(), duration: const Duration(seconds: 2)));
+            context,
+            PageTransition(type: PageTransitionType.fade, child: const MainScreen(), duration: const Duration(seconds: 2)),
+          );
           // MainApplication().startTimer();
         } else if (state == "login") {
           _logoMoveAnimationControllerBottom.forward();

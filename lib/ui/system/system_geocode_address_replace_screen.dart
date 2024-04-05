@@ -5,7 +5,6 @@ import 'package:booking/ui/route_point/route_point_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 class SystemGeocodeAddressReplaceScreen extends StatefulWidget {
   final TAG = "SystemGeocodeAddressReplaceScreen"; // ignore: non_constant_identifier_names
   final RoutePoint routePoint;
@@ -18,7 +17,7 @@ class SystemGeocodeAddressReplaceScreen extends StatefulWidget {
 }
 
 class _SystemGeocodeAddressReplaceScreenState extends State<SystemGeocodeAddressReplaceScreen> {
-  late RoutePoint newRoutePoint;
+  RoutePoint? newRoutePoint;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +33,16 @@ class _SystemGeocodeAddressReplaceScreenState extends State<SystemGeocodeAddress
             Text(widget.location.toString()),
             Text(widget.routePoint.name),
             Text(widget.routePoint.dsc),
-            MaterialButton(
+            ElevatedButton(
               child: const Text("Выбрать новый адрес"),
               onPressed: () async {
-                RoutePoint? toRoutePoint = await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
-                setState(() {
-                  newRoutePoint = toRoutePoint!;
-                });
+                RoutePoint? toRoutePoint =
+                    await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
+                if (toRoutePoint != null) {
+                  setState(() {
+                    newRoutePoint = toRoutePoint;
+                  });
+                }
               },
             ),
             newRoutePoint != null
@@ -48,15 +50,15 @@ class _SystemGeocodeAddressReplaceScreenState extends State<SystemGeocodeAddress
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("На следующую точку геокодинга"),
-                      Text("name: ${newRoutePoint.name}"),
-                      Text("dsc: ${newRoutePoint.dsc}"),
-                      Text("placeID: ${newRoutePoint.placeId}"),
-                      MaterialButton(
+                      Text("name: ${newRoutePoint!.name}"),
+                      Text("dsc: ${newRoutePoint!.dsc}"),
+                      Text("placeID: ${newRoutePoint!.placeId}"),
+                      ElevatedButton(
                         child: const Text("Заменить. Подумай, прежде чем нажать"),
                         onPressed: () async {
                           await GeoService().geocodeReplaceAddress(
-                              widget.location.latitude.toString(), widget.location.longitude.toString(), newRoutePoint.placeId);
-                          Navigator.pop(context);
+                              widget.location.latitude.toString(), widget.location.longitude.toString(), newRoutePoint!.placeId);
+                          if (context.mounted) Navigator.of(context).pop();
                         },
                       ),
                     ],

@@ -10,7 +10,6 @@ import 'package:booking/ui/route_point/route_point_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:list_tile_more_customizable/list_tile_more_customizable.dart';
 
-
 class RoutePointScreen extends StatelessWidget {
   final String TAG = "RoutePointScreen"; // ignore: non_constant_identifier_names
   final bool isFirst, viewReturn;
@@ -72,7 +71,7 @@ class RoutePointScreen extends StatelessWidget {
         },
       ),
     );
-  
+
     return Container();
   }
 
@@ -118,7 +117,7 @@ class RoutePointScreen extends StatelessWidget {
                         context, MaterialPageRoute(builder: (context) => RoutePointAddressScreen(routeStreet: routePoint)));
 
                     if (routePointAddress != null) {
-                      Navigator.pop(context, routePointAddress);
+                      if (context.mounted) Navigator.pop(context, routePointAddress);
                     }
                   } else if (routePoint.needDetail) {
                     GeoService().detail(routePoint).then((routePoint) {

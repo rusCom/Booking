@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:booking/data/order_state.dart';
 import 'package:booking/data/route_point.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AppBlocs {
   static final AppBlocs _singleton = AppBlocs._internal();
@@ -98,11 +97,13 @@ class AppBlocs {
   void dispose() {
     if (_pickUpController != null) _pickUpController?.close();
     if (_geoAutocompleteController != null) _geoAutocompleteController?.close();
-    if (_geoAutocompleteAddressController != null)
+    if (_geoAutocompleteAddressController != null) {
       _geoAutocompleteAddressController?.close();
+    }
     if (_orderStateController != null) _orderStateController?.close();
-    if (_orderRoutePointsController != null)
+    if (_orderRoutePointsController != null) {
       _orderRoutePointsController?.close();
+    }
     if (_newOrderTariffController != null) _newOrderTariffController?.close();
     if (_newOrderNoteController != null) _newOrderNoteController?.close();
     if (_newOrderPaymentController != null) _newOrderPaymentController?.close();

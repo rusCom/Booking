@@ -2,9 +2,9 @@ import 'package:booking/data/main_application.dart';
 import 'package:booking/data/order_state.dart';
 import 'package:booking/data/preferences.dart';
 import 'package:booking/services/app_blocs.dart';
-import 'package:booking/services/debug_print.dart';
 import 'package:booking/services/map_markers_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -15,27 +15,29 @@ import 'orders/sliding_panel/order_sliding_panel.dart';
 import 'system/system_geocde_replace_screen.dart';
 import 'system/system_geocode_address_replace_screen.dart';
 
-class MainScreen extends StatelessWidget  {
-  MainScreen({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
   late final GoogleMapController _mapController;
-  late final BuildContext _buildContext;
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   MapType _currentMapType = MapType.normal;
 
   NewOrderFirstPointScreen newOrderFirstPointScreen = NewOrderFirstPointScreen();
+
   NewOrderCalcScreen newOrderCalcScreen = const NewOrderCalcScreen();
-
-
 
   @override
   Widget build(BuildContext context) {
-    DebugPrint().flog("MainScreen build state");
-    _buildContext = context;
     final googleMap = StreamBuilder<Set<Marker>>(
         stream: MapMarkersService().mapMarkerStream,
         builder: (context, snapshot) {
-          // DebugPrint().flog("MainScreen map builder start");
           return GoogleMap(
             initialCameraPosition: CameraPosition(
               target: MainApplication().currentLocation,
@@ -54,13 +56,13 @@ class MainScreen extends StatelessWidget  {
           );
         });
 
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: _onPopInvoked,
       child: Scaffold(
         key: scaffoldKey,
         resizeToAvoidBottomInset: false,
-        drawer:
-            GlobalConfigs().get("tmp_drawer") ? const AppDrawer() : Container(),
+        drawer: GlobalConfigs().get("tmp_drawer") ? const AppDrawer() : Container(),
         drawerEnableOpenDragGesture: false,
         body: Stack(
           children: [
@@ -78,8 +80,7 @@ class MainScreen extends StatelessWidget  {
                     case OrderState.newOrderCalculated:
                       return newOrderCalcScreen;
                     default:
-                      return OrderSlidingPanel(
-                          curOrder: MainApplication().curOrder);
+                      return OrderSlidingPanel(curOrder: MainApplication().curOrder);
                   }
                 },
               ),
@@ -140,12 +141,13 @@ class MainScreen extends StatelessWidget  {
                           mini: true,
                           heroTag: '_mapAdminGeocodeReplace',
                           onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      SystemGeocodeReplaceScreen(
-                                          MapMarkersService()
-                                              .pickUpRoutePoint))),
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SystemGeocodeReplaceScreen(
+                                MapMarkersService().pickUpRoutePoint,
+                              ),
+                            ),
+                          ),
                           backgroundColor: Colors.green,
                           child: const Icon(
                             Icons.find_replace,
@@ -162,10 +164,8 @@ class MainScreen extends StatelessWidget  {
                           onPressed: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  SystemGeocodeAddressReplaceScreen(
-                                routePoint:
-                                    MapMarkersService().pickUpRoutePoint,
+                              builder: (context) => SystemGeocodeAddressReplaceScreen(
+                                routePoint: MapMarkersService().pickUpRoutePoint,
                                 location: MapMarkersService().pickUpLocation,
                               ),
                             ),
@@ -184,8 +184,9 @@ class MainScreen extends StatelessWidget  {
         ),
       ),
     );
-  } // build
+  }
 
+  // build
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
 
@@ -195,9 +196,7 @@ class MainScreen extends StatelessWidget  {
     }
     _onCameraIdle();
     if (MainApplication().curOrder.mapBoundsIcon) {
-      MainApplication().mapController?.animateCamera(
-          CameraUpdate.newLatLngBounds(
-              MapMarkersService().mapBounds(), Preferences().systemMapBounds));
+      MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
     }
   }
 
@@ -225,35 +224,29 @@ class MainScreen extends StatelessWidget  {
   }
 
   void _onMapTypeButtonPressed() {
-    _currentMapType = _currentMapType == MapType.normal
-        ? MapType.satellite
-        : MapType.normal;
+    _currentMapType = _currentMapType == MapType.normal ? MapType.satellite : MapType.normal;
     MapMarkersService().sinkStreamController();
   }
 
-  Future<bool> _onWillPop() async {
-    if (scaffoldKey.currentState!.isDrawerOpen) {
-      Navigator.pop(_buildContext);
-      return false;
-    }
-
-    // Если статус заказа - идет расчёт стоимости, то ничего не делаем
-    if (MainApplication().curOrder.orderState ==
-        OrderState.newOrderCalculating) {
-      return false;
-    }
-    // Если расчёт стоимости произведен, то возвращаем на новый заказ
-    if (MainApplication().curOrder.orderState ==
-        OrderState.newOrderCalculated) {
-      newOrderCalcScreen.backPressed();
-      return false;
-    }
-
-    return true;
+  void _onMapBoundsButtonPressed() {
+    MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(MapMarkersService().mapBounds(), Preferences().systemMapBounds));
   }
 
-  void _onMapBoundsButtonPressed() {
-    MainApplication().mapController?.animateCamera(CameraUpdate.newLatLngBounds(
-        MapMarkersService().mapBounds(), Preferences().systemMapBounds));
+  void _onPopInvoked(bool didPop) {
+    if (didPop) return;
+    if (scaffoldKey.currentState!.isDrawerOpen) {
+      Navigator.pop(context);
+      return;
+    }
+    // Если статус заказа - идет расчёт стоимости, то ничего не делаем
+    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculating) {
+      return;
+    }
+    // Если расчёт стоимости произведен, то возвращаем на новый заказ
+    if (MainApplication().curOrder.orderState == OrderState.newOrderCalculated) {
+      newOrderCalcScreen.backPressed();
+      return;
+    }
+    SystemNavigator.pop();
   }
 }

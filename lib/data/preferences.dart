@@ -1,7 +1,6 @@
 import 'package:booking/main_utils.dart';
 import 'package:booking/services/debug_print.dart';
 
-import '../ui/utils/core.dart';
 import 'order_tariff.dart';
 import 'payment_type.dart';
 

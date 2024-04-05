@@ -44,8 +44,10 @@ class MapMarkersService {
   RoutePoint _pickUpRoutePoint = RoutePoint();
   PickUpState _pickUpState = PickUpState.init;
 
-  List<MainLocation> _agentLocations = [];
+  final List<MainLocation> _agentLocations = [];
   MainLocation _lastAgentLocation = MainLocation.nullable();
+  bool _agentLocationAnimate = false;
+  late TickerProvider agentLocationTickerProvider;
 
   late final Marker _mapPickUpMarker, _mapDestinationMarker, _mapAgentMarker;
 
@@ -135,8 +137,53 @@ class MapMarkersService {
     _mapMarkerSink.add(markers());
   }
 
-  void addAgentLocation(MainLocation newLocation){
+  void addAgentLocation(MainLocation newLocation) {
+    if (MainApplication().curOrder.agent == null) {
+      clearAgentMarker();
+      return;
+    }
+    /*
+    DebugPrint().flog("_agentLocations.isEmpty = ${_agentLocations.isEmpty}");
+    if (_agentLocations.isEmpty){
+      DebugPrint().flog("newLocation.regDate = ${newLocation.regDate}");
+      DebugPrint().flog("_lastAgentLocation.regDate = ${_lastAgentLocation.regDate}");
+      if (newLocation.isAfter(_lastAgentLocation)){
+        _agentLocations.add(newLocation);
+      }
+    }
+    else if (newLocation.isAfter(_agentLocations.first)){
+      _agentLocations.add(newLocation);
+      _agentLocations.sort((a, b) => a.regDate.compareTo(b.regDate));
+    }
 
+     */
+    _agentLocations.add(newLocation);
+
+
+    if (!_agentLocationAnimate) {
+      _animateAgentLocation();
+    }
+  }
+
+  void _animateAgentLocation() {
+    if (_agentLocations.isEmpty) return;
+    _agentLocationAnimate = true;
+
+    MainLocation newAgentLocation = _agentLocations.first;
+
+    if (!_lastAgentLocation.isSame(newAgentLocation)) {
+      Marker updatedPickUpMarker = _mapAgentMarker.copyWith(
+        positionParam: newAgentLocation.toLatLng(),
+        rotationParam: newAgentLocation.bearing == 0.0 ? newAgentLocation.calcBearing(_lastAgentLocation) : newAgentLocation.bearing,
+      );
+
+      _markers[_mapAgentMarkerID] = updatedPickUpMarker;
+      _lastAgentLocation = newAgentLocation;
+      sinkStreamController();
+    }
+
+    _agentLocations.removeAt(0);
+    _agentLocationAnimate = false;
   }
 
   void agentMarkerRefresh(MainLocation agentLocation) {
@@ -163,14 +210,27 @@ class MapMarkersService {
     }
     _lastAgentLocation = MainLocation.nullable();
     _agentLocations.clear();
-    if (sink)sinkStreamController();
+    if (sink) sinkStreamController();
   }
 
   Future<void> getMapPolyline() async {
     if (MainApplication().curOrder.routePoints.length > 1 && lastRoutePointPolylineData != MainApplication().curOrder.routePoints.toString()) {
       lastRoutePointPolylineData = MainApplication().curOrder.routePoints.toString();
+      bool res = await _getMapPolylineRest(false);
+      if (!res){
+        await _getMapPolylineRest(true);
+      }
+      _mapMarkerSink.add(markers());
+    } else if ((MainApplication().curOrder.routePoints.length == 1 || MainApplication().curOrder.routePoints.isEmpty) && _polylines.isNotEmpty) {
+      // если точка маршрута одна, то очистить данные
+      _polylines.clear();
+      _mapMarkerSink.add(markers());
+    }
+  }
 
-      List<String>? polylineData = await GeoService().directions(jsonEncode(MainApplication().curOrder.routePoints));
+  Future<bool> _getMapPolylineRest(bool force) async {
+    try {
+      List<String>? polylineData = await GeoService().directions(jsonEncode(MainApplication().curOrder.routePoints), force: force);
       if (polylineData != null) {
         List<LatLng> polylineCoordinates = [];
         _polylines.clear();
@@ -184,17 +244,19 @@ class MapMarkersService {
         Polyline polyline = Polyline(polylineId: id, color: mainColor, points: polylineCoordinates, width: 4);
 
         _polylines[id] = polyline;
-        _mapMarkerSink.add(markers());
+
       }
-    } else if ((MainApplication().curOrder.routePoints.length == 1 || MainApplication().curOrder.routePoints.isEmpty) && _polylines.isNotEmpty) {
-      // если точка маршрута одна, то очистить данные
-      _polylines.clear();
-      _mapMarkerSink.add(markers());
+      return true;
     }
+    catch (exception){
+      return false;
+    }
+    return false;
   }
 
   void refresh() {
     clearAgentMarker(sink: false);
+    lastRoutePointPolylineData = "";
     if (MainApplication().curOrder.orderState == OrderState.newOrder) {
       RoutePoint? pickUpRoutePoint = MainApplication().curOrder.routePoints.first;
       Marker updatedPickUpMarker = _mapPickUpMarker.copyWith(
@@ -250,6 +312,7 @@ class MapMarkersService {
 
       if (MainApplication().curOrder.agent != null) {
         agentMarkerRefresh(MainApplication().curOrder.agent!.location);
+        // addAgentLocation(MainApplication().curOrder.agent!.location);
       }
     } // else if (MainApplication().curOrder.orderState == OrderState.client_in_car){
 

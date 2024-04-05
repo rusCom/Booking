@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appmetrica_plugin/appmetrica_plugin.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:booking/constants/style.dart';
 import 'package:booking/data/main_location.dart';
@@ -60,6 +61,7 @@ class MainApplication {
   );
 
   Future<bool> init(BuildContext context) async {
+
     _sharedPreferences = await SharedPreferences.getInstance();
     deviceId = (await PlatformDeviceId.getDeviceId)!;
 
@@ -104,6 +106,9 @@ class MainApplication {
 
     _clientToken = _sharedPreferences?.getString("_clientToken") ?? "";
 
+    await AppMetrica.activate(const AppMetricaConfig("fafb31ab-508e-4ab1-98a4-ee4902aadcc3"));
+
+
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     pushToken = await messaging.getToken();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -130,9 +135,9 @@ class MainApplication {
   }
 
   launchURL(String url) async {
-    Uri _url = Uri.parse(url);
-    if (!await launchUrl(_url)) {
-      throw Exception('Could not launch $_url');
+    Uri url0 = Uri.parse(url);
+    if (!await launchUrl(url0)) {
+      throw Exception('Could not launch $url0');
     }
   }
 

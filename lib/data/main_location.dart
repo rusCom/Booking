@@ -16,7 +16,7 @@ class MainLocation {
     latitude = 0.0;
     longitude = 0.0;
     bearing = 0.0;
-    regDate = DateTime.now();
+    regDate = DateTime(1990);
   }
 
   factory MainLocation.fromJson(Map<String, dynamic> jsonData) {
@@ -30,6 +30,10 @@ class MainLocation {
 
   bool isSame(MainLocation otherLocation) {
     return latitude == otherLocation.latitude && longitude == otherLocation.longitude;
+  }
+
+  bool isAfter(MainLocation otherLocation){
+    return regDate.isAfter(otherLocation.regDate);
   }
 
   LatLng toLatLng() {

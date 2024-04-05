@@ -16,7 +16,7 @@ class SystemGeocodeReplaceScreen extends StatefulWidget {
 
 class _SystemGeocodeReplaceScreenState extends State<SystemGeocodeReplaceScreen> {
   final TAG = (SystemGeocodeReplaceScreen).toString(); // ignore: non_constant_identifier_names
-  late RoutePoint toRoutePoint;
+  RoutePoint? toRoutePoint;
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +26,11 @@ class _SystemGeocodeReplaceScreenState extends State<SystemGeocodeReplaceScreen>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("Заменить точку геокодинга"),
+            const Text("Заменить точку геокодинга", textAlign: TextAlign.center),
             Text("name: ${widget.fromRoutePoint.name}"),
             Text("dsc: ${widget.fromRoutePoint.dsc}"),
             Text("placeID: ${widget.fromRoutePoint.placeId}"),
-            MaterialButton(
+            ElevatedButton(
               onPressed: () async {
                 RoutePoint? destinationRoutePoint =
                     await Navigator.push<RoutePoint>(context, MaterialPageRoute(builder: (context) => const RoutePointScreen()));
@@ -48,24 +48,24 @@ class _SystemGeocodeReplaceScreenState extends State<SystemGeocodeReplaceScreen>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text("На следующую точку геокодинга"),
-                      Text("name: ${toRoutePoint.name}"),
-                      Text("dsc: ${toRoutePoint.dsc}"),
-                      Text("placeID: ${toRoutePoint.placeId}"),
-                      MaterialButton(
-                        child: const Text("Заменить. Подумай, прежде чем нажать"),
+                      Text("name: ${toRoutePoint!.name}"),
+                      Text("dsc: ${toRoutePoint!.dsc}"),
+                      Text("placeID: ${toRoutePoint!.placeId}"),
+                      ElevatedButton(
+                        child: const Text("Заменить. Подумай, прежде чем нажать", textAlign: TextAlign.center),
                         onPressed: () async {
-                          GeoService().geocodeReplace(widget.fromRoutePoint.placeId, toRoutePoint.placeId);
-                          Navigator.pop(context);
+                          GeoService().geocodeReplace(widget.fromRoutePoint.placeId, toRoutePoint!.placeId);
+                          if (context.mounted) Navigator.of(context).pop();
                         },
                       ),
                     ],
                   )
                 : Container(),
-            MaterialButton(
-              child: const Text("Очистить кэш по геокодингу для выбранной точки."),
+            ElevatedButton(
+              child: const Text("Очистить кэш по геокодингу для выбранной точки.", textAlign: TextAlign.center),
               onPressed: () async {
                 GeoService().geocodeClear(widget.fromRoutePoint);
-                Navigator.pop(context);
+                if (context.mounted) Navigator.of(context).pop();
               },
             ),
           ],
