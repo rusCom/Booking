@@ -5,7 +5,7 @@ class DebugPrint {
   final _systemGeocodeReplaceScreen = false;
   final _systemGeocodeAddressReplaceScreen = false;
 
-  final _splashScreen = false;
+  final _splashScreen = true;
   final _routePointScreen = false;
 
   final _restService = false;

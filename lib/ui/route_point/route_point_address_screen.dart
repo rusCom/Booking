@@ -15,7 +15,6 @@ class RoutePointAddressScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DebugPrint().flog("RoutePointAddressScreen build");
     RoutePointTextField? numberRoutePointTextField, splashRoutePointTextField;
     FocusNode textSecondFocusNode = FocusNode();
     RoutePointSearchBar routePointSearchBar = RoutePointSearchBar(

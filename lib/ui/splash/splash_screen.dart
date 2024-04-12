@@ -33,19 +33,21 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
 
   startTime() async {
     DebugPrint().log(TAG, "startTime", "start init");
-
-    /// Initializing the AppMetrica SDK.
-    // await AppMetrica.activate(const AppMetricaConfig("7ec5f770-9461-4946-ae76-cc41601c8820"));
-    await Permission.notification.isDenied.then((value) async => {
-          if (value) {await Permission.notification.request()}
-        });
-
-    if (!mounted) return;
     await MainApplication().init(context);
-    if (!mounted) return;
-    await MapMarkersService().init(context);
+
+    await Permission.notification.isDenied.then((value) async => {
+      if (value) {await Permission.notification.request()}
+    });
+
+    try{
+      await MapMarkersService().init();
+    }catch (exception, stackTrace){
+      DebugPrint().log("sys", exception.toString(), stackTrace.toString());
+    }
+
     await profileAuth();
-    DebugPrint().log(TAG, "startTime", "complite init");
+
+    DebugPrint().log(TAG, "startTime", "complete init");
   }
 
   profileAuth() async {
@@ -81,9 +83,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         if (state == "init") {
           _logoScaleAnimationController.forward();
         } else if (state == "main") {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             PageTransition(type: PageTransitionType.fade, child: const MainScreen(), duration: const Duration(seconds: 2)),
+            (Route<dynamic> route) => false,
           );
           // MainApplication().startTimer();
         } else if (state == "login") {

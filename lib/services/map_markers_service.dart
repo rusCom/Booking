@@ -53,7 +53,8 @@ class MapMarkersService {
 
   late final BitmapDescriptor _mapAddressIcon;
 
-  init(BuildContext context) async {
+  init() async {
+
     _mapAddressIcon = BitmapDescriptor.fromBytes(await getBytesFromAsset("assets/icons/ic_onboard_address.png", 200));
 
     _mapPickUpMarker = Marker(
