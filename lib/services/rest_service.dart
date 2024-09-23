@@ -145,7 +145,6 @@ class RestService {
 
   static String _authHeader() {
     var header = {
-      "deviceId": MainApplication().deviceId,
       "dispatching": GlobalConfigs().get("dispatchingToken"),
       "location": MainApplication().currentPosition?.toJson(),
       "platform": "android",

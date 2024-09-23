@@ -42,7 +42,6 @@ class AppDrawer extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       onTap: () {
         if (route != null) {

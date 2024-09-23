@@ -13,7 +13,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:global_configs/global_configs.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:platform_device_id_v3/platform_device_id.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -37,7 +36,6 @@ class MainApplication {
 
   Position? currentPosition;
   final Order _curOrder = Order();
-  String deviceId = "";
   String? _clientToken;
   GoogleMapController? mapController;
   Preferences preferences = Preferences();
@@ -63,7 +61,6 @@ class MainApplication {
   Future<bool> init(BuildContext context) async {
 
     _sharedPreferences = await SharedPreferences.getInstance();
-    deviceId = (await PlatformDeviceId.getDeviceId)!;
 
     packageInfo = await PackageInfo.fromPlatform();
 

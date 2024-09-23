@@ -131,7 +131,6 @@ class GeoService {
 
   static Map<String, String> get _authHeader {
     var header = {
-      "deviceId": MainApplication().deviceId,
       "token": GlobalConfigs().get("geoToken"),
       "phone": Profile().phone,
       "google_key": MainApplication().preferences.googleKey,
